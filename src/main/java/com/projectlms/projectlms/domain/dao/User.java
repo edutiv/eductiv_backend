@@ -46,6 +46,9 @@ public class User extends BaseEntityWithDeletedAt {
     @Column(name = "password", nullable =  false)
     private String password;
 
+    @Column(name = "role", nullable =  false)
+    private String role;
+
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Request> requests;

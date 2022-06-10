@@ -30,6 +30,9 @@ public class Video extends BaseEntityWithDeletedAt{
     @Column(name = "video_name", nullable = false)
     private String videoName; 
 
+    @Column(name = "video_url", nullable = false)
+    private String videoUrl; 
+
     @ManyToOne
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;

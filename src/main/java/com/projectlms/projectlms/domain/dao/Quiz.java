@@ -30,6 +30,9 @@ public class Quiz extends BaseEntityWithDeletedAt{
     @Column(name = "quiz_name", nullable = false)
     private String slideName; 
 
+    @Column(name = "quiz_url", nullable = false)
+    private String quizUrl; 
+
     @ManyToOne
     @JoinColumn(name = "quiz_id", nullable = false)
     private Section section;
