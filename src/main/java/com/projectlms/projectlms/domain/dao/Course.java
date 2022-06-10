@@ -31,7 +31,7 @@ public class Course extends BaseEntityWithDeletedAt {
     private Long id;
 
     @Column(name = "course_name", nullable = false)
-    private String course_name; 
+    private String courseName; 
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
