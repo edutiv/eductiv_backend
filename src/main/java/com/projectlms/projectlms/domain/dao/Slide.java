@@ -30,6 +30,9 @@ public class Slide extends BaseEntityWithDeletedAt{
     @Column(name = "slide_name", nullable = false)
     private String slideName; 
 
+    @Column(name = "slide_url", nullable = false)
+    private String slideUrl; 
+
     @ManyToOne
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
