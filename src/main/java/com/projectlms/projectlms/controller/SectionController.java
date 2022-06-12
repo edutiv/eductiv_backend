@@ -14,7 +14,7 @@ import com.projectlms.projectlms.domain.dto.SectionDto;
 import com.projectlms.projectlms.service.SectionService;
 
 @RestController
-@RequestMapping(value = "/section")
+@RequestMapping(value = "/course/{cid}/section")
 public class SectionController {
     private final SectionService sectionService;
 
@@ -23,7 +23,8 @@ public class SectionController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> addSection(@RequestBody SectionDto request) {
+    public ResponseEntity<Object> addSection(@PathVariable(value = "cid") Long courseId, @RequestBody SectionDto request) {
+        request.setCourseId(courseId);
         return sectionService.addSection(request);
     }
 
@@ -43,7 +44,8 @@ public class SectionController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateSection(@PathVariable(value = "id") Long id, @RequestBody SectionDto request) {
+    public ResponseEntity<Object> updateSection(@PathVariable (value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody SectionDto request) {
+        request.setCourseId(courseId);
         return sectionService.updateSection(request, id);
     }
 }

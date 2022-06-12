@@ -13,7 +13,7 @@ import com.projectlms.projectlms.domain.dto.EnrolledCourseDto;
 import com.projectlms.projectlms.service.EnrolledCourseService;
 
 @RestController
-@RequestMapping(value = "/request")
+@RequestMapping(value = "/enrolled")
 public class EnrolledCourseController {
     private final EnrolledCourseService requestService;
 

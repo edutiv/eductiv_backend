@@ -14,7 +14,7 @@ import com.projectlms.projectlms.domain.dto.MaterialDto;
 import com.projectlms.projectlms.service.MaterialService;
 
 @RestController
-@RequestMapping(value = "/material")
+@RequestMapping(value = "/course/{cid}/section/{cis}/material")
 public class MaterialController {
     private final MaterialService materialService;
 
@@ -23,7 +23,8 @@ public class MaterialController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> addMaterial(@RequestBody MaterialDto request) {
+    public ResponseEntity<Object> addMaterial(@PathVariable(value = "cis") Long sectionId, @RequestBody MaterialDto request) {
+        request.setSectionId(sectionId);
         return materialService.addMaterial(request);
     }
 
@@ -43,7 +44,8 @@ public class MaterialController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateMaterial(@PathVariable(value = "id") Long id, @RequestBody MaterialDto request) {
+    public ResponseEntity<Object> updateMaterial(@PathVariable(value = "cis") Long sectionId, @PathVariable(value = "id") Long id, @RequestBody MaterialDto request) {
+        request.setSectionId(sectionId);
         return materialService.updateMaterial(request, id);
     }
 }
