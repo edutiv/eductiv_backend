@@ -41,9 +41,11 @@ public class CourseService {
 
             Course course = Course.builder()
                 .courseName(request.getCourseName())
+                .courseImage(request.getCourseImage())
                 .category(category.get())
                 .description(request.getDescription())
-                .rating(request.getRating())
+                .totalVideo(request.getTotalVideo())
+                .totalTimes(request.getTotalTimes())
                 .build();
 
             course = courseRepository.save(course);
@@ -64,7 +66,7 @@ public class CourseService {
         }
     }
 
-    public ResponseEntity<Object> getCouresDetail(Long id) {
+    public ResponseEntity<Object> getCourseDetail(Long id) {
         try {
             log.info("Find course detail by course id: {}", id);
             Optional<Course> courseDetail = courseRepository.findOne(id);
@@ -95,9 +97,11 @@ public class CourseService {
             }
 
             course.get().setCourseName(request.getCourseName());
+            course.get().setCourseImage(request.getCourseImage());
             course.get().setCategory(category.get());
             course.get().setDescription(request.getDescription());
-            course.get().setRating(request.getRating());
+            course.get().setTotalVideo(request.getTotalVideo());
+            course.get().setTotalTimes(request.getTotalTimes());
             courseRepository.save(course.get());
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, course.get(), HttpStatus.OK);
         } catch (Exception e) {

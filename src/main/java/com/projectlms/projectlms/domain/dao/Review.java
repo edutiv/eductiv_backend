@@ -19,21 +19,25 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@Table(name = "M_SLIDE")
-public class Slide extends BaseEntityWithDeletedAt{
+@Table(name = "M_REVIEW")
+public class Review extends BaseEntityWithDeletedAt{
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "slide_name", nullable = false)
-    private String slideName; 
-
-    @Column(name = "slide_url", nullable = false)
-    private String slideUrl; 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "section_id", nullable = false)
-    private Section section;
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
+
+    @Column(name = "rating", nullable = false)
+    private Integer rating;
+
+    @Column(name = "review", nullable = false)
+    private String review;
 }

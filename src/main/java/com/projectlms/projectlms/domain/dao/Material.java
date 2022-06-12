@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
 import javax.persistence.*;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -19,32 +18,27 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@Table(name = "M_REQUEST")
-public class Request extends BaseEntityWithDeletedAt{
-    
+@Table(name = "M_MATERIAL")
+public class Material extends BaseEntityWithDeletedAt{
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "section_id", nullable = false)
+    private Section section;
 
-    @Column(name = "request_type", nullable = false)
-    private String requestType;
-
-    @Column(name = "request_name", nullable = false)
-    private String requestName;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Course course;
-
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "material_type", nullable = false)
+    private String materialType;
     
-    
+    @Column(name = "material_name", nullable = false)
+    private String materialName;
 
+    @Column(name = "material_url", nullable = false)
+    private String materialUrl; 
+
+    @Column(name = "is_completed")
+    private Boolean isCompleted; 
 }

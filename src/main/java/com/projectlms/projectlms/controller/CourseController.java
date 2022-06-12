@@ -33,9 +33,9 @@ public class CourseController {
         return courseService.getAllCourse();
     }
 
-    @GetMapping(value = "/detail/{id}")
-    public ResponseEntity<Object> getCouresDetail(@PathVariable(value = "id") Long id) {
-        return courseService.getCouresDetail(id);
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> getCourseDetail(@PathVariable(value = "id") Long id) {
+        return courseService.getCourseDetail(id);
     }
 
     @DeleteMapping(value = "/{id}")

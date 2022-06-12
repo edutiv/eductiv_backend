@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-// import java.util.Collection;
-// import java.util.List;
-
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -49,8 +46,15 @@ public class User extends BaseEntityWithDeletedAt {
     @Column(name = "role", nullable =  false)
     private String role;
 
+    @Column(name = "specialization", nullable =  false)
+    private String specialization;
+
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Request> requests;
+    private List<EnrolledCourse> enrolledCourses;
+
+    // @JsonIgnore
+    // @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    // private List<Review> reviews;
 
 }
