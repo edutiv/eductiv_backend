@@ -17,11 +17,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CategoryDto implements Serializable {
+public class ToolDto implements Serializable {
     private static final long serialVersionUID =  1L;
     
     private Long id;
-    private String categoryName;
-    private String categoryImage;
-    private String description;
+    private String toolName;
+    private String toolIcon;
+    private String toolUrl;
+    private long courseId;
 }

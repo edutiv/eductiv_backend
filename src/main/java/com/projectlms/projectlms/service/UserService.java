@@ -34,6 +34,7 @@ public class UserService {
             .email(request.getEmail())
             .password(request.getPassword())
             .role(request.getRole())
+            .specialization(request.getSpecialization())
             .build();
         try {
             user = userRepository.save(user);
@@ -70,6 +71,7 @@ public class UserService {
             user.get().setEmail(request.getEmail());
             user.get().setPassword(request.getPassword());
             user.get().setRole(request.getRole());
+            user.get().setSpecialization(request.getSpecialization());
             userRepository.save(user.get());
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, user.get(), HttpStatus.OK);
         } catch (Exception e) {

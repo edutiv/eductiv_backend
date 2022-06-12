@@ -31,22 +31,14 @@ public class Section extends BaseEntityWithDeletedAt{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "section_name", nullable = false)
-    private String sectionName;
-
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "section")
-    private List<Slide> slides;
+    @Column(name = "section_name", nullable = false)
+    private String sectionName;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "section")
-    private List<Video> videos;
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "section")
-    private List<Quiz> quizzes;
+    private List<Material> materials;
 }

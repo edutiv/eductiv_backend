@@ -33,6 +33,9 @@ public class Course extends BaseEntityWithDeletedAt {
     @Column(name = "course_name", nullable = false)
     private String courseName; 
 
+    @Column(name = "course_image", nullable = false)
+    private String courseImage; 
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -40,8 +43,11 @@ public class Course extends BaseEntityWithDeletedAt {
     @Column(name = "description", nullable = false)
     private String description; 
 
-    @Column(name = "rating", nullable = false)
-    private Integer rating;
+    @Column(name = "total_video", nullable = false)
+    private Integer totalVideo;
+
+    @Column(name = "total_times", nullable = false)
+    private Integer totalTimes;
     
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
@@ -49,5 +55,13 @@ public class Course extends BaseEntityWithDeletedAt {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
-    private List<Request> requests;
+    private List<EnrolledCourse> enrolledCourses;
+
+    // @JsonIgnore
+    // @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+    // private List<Review> reviews;
+
+    // @JsonIgnore
+    // @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+    // private List<Tool> tools;
 }

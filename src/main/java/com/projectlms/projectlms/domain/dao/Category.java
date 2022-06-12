@@ -29,8 +29,11 @@ public class Category extends BaseEntityWithDeletedAt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "category", nullable = false)
-    private String category;
+    @Column(name = "category_name", nullable = false)
+    private String categoryName;
+
+    @Column(name = "category_image", nullable = false)
+    private String categoryImage;
     
     @Column(name = "description", nullable = false)
     private String description;

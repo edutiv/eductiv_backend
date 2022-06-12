@@ -29,8 +29,9 @@ public class CategoryService {
     public ResponseEntity<Object> addCategory(CategoryDto request) {
         log.info("Save new category: {}", request);
         Category category = Category.builder()
-            .category(request.getCategory())
-            .description(request.getCategory())
+            .categoryName(request.getCategoryName())
+            .categoryImage(request.getCategoryImage())
+            .description(request.getDescription()) 
             .build();
         
         try {
@@ -74,7 +75,9 @@ public class CategoryService {
                 log.info("category not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
-            category.get().setCategory(request.getCategory());
+            category.get().setCategoryName(request.getCategoryName());
+            category.get().setCategoryImage(request.getCategoryImage());
+            category.get().setDescription(request.getDescription());
             categoryRepository.save(category.get());
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, category.get(), HttpStatus.OK);
         } catch (Exception e) {
