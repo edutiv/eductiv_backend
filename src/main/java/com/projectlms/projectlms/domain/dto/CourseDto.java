@@ -26,5 +26,5 @@ public class CourseDto implements Serializable {
     private Long categoryId;
     private String description;
     private Integer totalVideo;
-    private Integer totalTimes;
+    private String totalTimes;
 }

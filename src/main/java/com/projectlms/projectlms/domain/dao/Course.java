@@ -47,7 +47,7 @@ public class Course extends BaseEntityWithDeletedAt {
     private Integer totalVideo;
 
     @Column(name = "total_times", nullable = false)
-    private Integer totalTimes;
+    private String totalTimes;
     
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
