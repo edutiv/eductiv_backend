@@ -14,7 +14,7 @@ import com.projectlms.projectlms.domain.dto.ReviewDto;
 import com.projectlms.projectlms.service.ReviewService;
 
 @RestController
-@RequestMapping(value = "/review")
+@RequestMapping(value = "/course/{cid}/review")
 public class ReviewController {
     private final ReviewService reviewService;
 
@@ -23,7 +23,8 @@ public class ReviewController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> addReview(@RequestBody ReviewDto request) {
+    public ResponseEntity<Object> addReview(@PathVariable(value = "cid") Long courseId, @RequestBody ReviewDto request) {
+        request.setCourseId(courseId);
         return reviewService.addReview(request);
     }
 
@@ -43,7 +44,8 @@ public class ReviewController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateReview(@PathVariable(value = "id") Long id, @RequestBody ReviewDto request) {
+    public ResponseEntity<Object> updateReview(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody ReviewDto request) {
+        request.setCourseId(courseId);
         return reviewService.updateReview(request, id);
     }
     

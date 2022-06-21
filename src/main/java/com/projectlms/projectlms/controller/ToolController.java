@@ -14,7 +14,7 @@ import com.projectlms.projectlms.domain.dto.ToolDto;
 import com.projectlms.projectlms.service.ToolService;
 
 @RestController
-@RequestMapping(value = "/tool")
+@RequestMapping(value = "/course/{cid}/tool")
 public class ToolController {
     private final ToolService toolService;
 
@@ -23,7 +23,8 @@ public class ToolController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> addTool(@RequestBody ToolDto request) {
+    public ResponseEntity<Object> addTool(@PathVariable(value = "cid") Long courseId, @RequestBody ToolDto request) {
+        request.setCourseId(courseId);
         return toolService.addTool(request);
     }
 
@@ -43,7 +44,8 @@ public class ToolController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateTool(@PathVariable(value = "id") Long id, @RequestBody ToolDto request) {
+    public ResponseEntity<Object> updateTool(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody ToolDto request) {
+        request.setCourseId(courseId);
         return toolService.updateTool(request, id);
     }
 }
