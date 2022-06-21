@@ -53,8 +53,8 @@ public class User extends BaseEntityWithDeletedAt {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<EnrolledCourse> enrolledCourses;
 
-    // @JsonIgnore
-    // @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    // private List<Review> reviews;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Review> reviews;
 
 }
