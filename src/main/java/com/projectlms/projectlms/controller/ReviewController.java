@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import com.projectlms.projectlms.service.ReviewService;
 
 @RestController
 @RequestMapping(value = "/course/{cid}/review")
+@CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
 public class ReviewController {
     private final ReviewService reviewService;
 
