@@ -17,6 +17,7 @@ import com.projectlms.projectlms.service.SectionService;
 @RestController
 @RequestMapping(value = "/course/{cid}/section")
 @CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
+
 public class SectionController {
     private final SectionService sectionService;
 
@@ -31,13 +32,13 @@ public class SectionController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getAllSection() {
-        return sectionService.getAllSection();
+    public ResponseEntity<Object> getAllSection(@PathVariable(value = "cid") Long courseId) {
+        return sectionService.getAllSection(courseId);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Object> getSectionDetail(@PathVariable(value = "id") Long id) {
-        return sectionService.getSectionDetail(id);
+    public ResponseEntity<Object> getSectionDetail(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
+        return sectionService.getSectionDetail(courseId, id);
     }
 
     @DeleteMapping(value = "/{id}")

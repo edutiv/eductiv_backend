@@ -17,6 +17,7 @@ import com.projectlms.projectlms.service.MaterialService;
 @RestController
 @RequestMapping(value = "/course/{cid}/section/{sid}/material")
 @CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
+
 public class MaterialController {
     private final MaterialService materialService;
 
@@ -31,13 +32,13 @@ public class MaterialController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getAllMaterial() {
-        return materialService.getAllMaterial();
+    public ResponseEntity<Object> getAllMaterial(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "sid") Long sectionId) {
+        return materialService.getAllMaterial(courseId, sectionId);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Object> getMaterialDetail(@PathVariable(value = "id") Long id) {
-        return materialService.getMaterialDetail(id);
+    public ResponseEntity<Object> getMaterialDetail(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "sid") Long sectionId, @PathVariable(value = "id") Long id) {
+        return materialService.getMaterialDetail(courseId, sectionId, id);
     }
 
     @DeleteMapping(value = "/{id}")

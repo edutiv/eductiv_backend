@@ -1,5 +1,6 @@
 package com.projectlms.projectlms.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.projectlms.projectlms.constant.AppConstant;
+import com.projectlms.projectlms.domain.dao.Course;
 import com.projectlms.projectlms.domain.dao.Material;
 import com.projectlms.projectlms.domain.dao.Section;
 import com.projectlms.projectlms.domain.dto.MaterialDto;
+import com.projectlms.projectlms.repository.CourseRepository;
 import com.projectlms.projectlms.repository.MaterialRepository;
 import com.projectlms.projectlms.repository.SectionRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
@@ -23,11 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 public class MaterialService {
     private final MaterialRepository materialRepository;
     private final SectionRepository sectionRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public MaterialService(MaterialRepository materialRepository, SectionRepository sectionRepository) {
+    public MaterialService(MaterialRepository materialRepository, SectionRepository sectionRepository, CourseRepository courseRepository) {
         this.materialRepository = materialRepository;
         this.sectionRepository = sectionRepository;
+        this.courseRepository = courseRepository;
     }
 
     public ResponseEntity<Object> addMaterial(MaterialDto request) {
@@ -54,20 +59,53 @@ public class MaterialService {
         }
     }
 
-    public ResponseEntity<Object> getAllMaterial() {
+    public ResponseEntity<Object> getAllMaterial(Long courseId, Long sectionId) {
         try {
-            log.info("Get all material");
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, materialRepository.findAll(), HttpStatus.OK);
+            log.info("Get course");
+            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
+            log.info("Get section");
+            Optional<Section> sectionDetail = sectionRepository.searchById(sectionId, courseId);
+            if (sectionDetail.isEmpty()) {
+                log.info("section not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
+            log.info("Get all materials");
+            List<Material> materials = materialRepository.searchAll(sectionId);
+            if (materials.isEmpty()) {
+                log.info("sections is empty");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, materials, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Get an error by get all materials, Error : {}",e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<Object> getMaterialDetail(Long id) {
+    public ResponseEntity<Object> getMaterialDetail(Long courseId, Long sectionId, Long id) {
         try {
-            log.info("Find material detail by material id: {}", id);
-            Optional<Material> materialDetail = materialRepository.findOne(id);
+            log.info("Get course");
+            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
+            log.info("Get section");
+            Optional<Section> sectionDetail = sectionRepository.searchById(sectionId, courseId);
+            if (sectionDetail.isEmpty()) {
+                log.info("section not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
+            log.info("Get material detail by id: {}", id);
+            Optional<Material> materialDetail = materialRepository.searchById(id, sectionId);
             if (materialDetail.isEmpty()) {
                 log.info("material not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

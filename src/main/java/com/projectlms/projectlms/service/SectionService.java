@@ -1,5 +1,6 @@
 package com.projectlms.projectlms.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,20 +52,39 @@ public class SectionService {
         }
     }
 
-    public ResponseEntity<Object> getAllSection() {
+    public ResponseEntity<Object> getAllSection(Long courseId) {
         try {
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             log.info("Get all section");
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, sectionRepository.findAll(), HttpStatus.OK);
+            List<Section> sections = sectionRepository.searchAll(courseId);
+            if (sections.isEmpty()) {
+                log.info("sections is empty");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, sections, HttpStatus.OK);
+        
         } catch (Exception e) {
             log.error("Get an error by get all sections, Error : {}",e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<Object> getSectionDetail(Long id) {
+    public ResponseEntity<Object> getSectionDetail(Long courseId, Long id) {
         try {
-            log.info("Find section detail by section id: {}", id);
-            Optional<Section> sectionDetail = sectionRepository.findOne(id);
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
+            log.info("Find section detail by id: {}", id);
+            Optional<Section> sectionDetail = sectionRepository.searchById(id, courseId);
             if (sectionDetail.isEmpty()) {
                 log.info("section not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
