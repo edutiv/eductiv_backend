@@ -10,7 +10,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
@@ -33,12 +34,13 @@ public class Section extends BaseEntityWithDeletedAt{
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
+    @JsonBackReference
     private Course course;
 
     @Column(name = "section_name", nullable = false)
     private String sectionName;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "section")
+    @JsonManagedReference
     private List<Material> materials;
 }

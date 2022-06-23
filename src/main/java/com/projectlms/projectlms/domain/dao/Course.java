@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
@@ -49,19 +49,19 @@ public class Course extends BaseEntityWithDeletedAt {
     @Column(name = "total_times", nullable = false)
     private String totalTimes;
     
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+    @JsonManagedReference
     private List<Section> sections;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+    @JsonManagedReference
     private List<EnrolledCourse> enrolledCourses;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+    @JsonManagedReference
     private List<Review> reviews;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+    @JsonManagedReference
     private List<Tool> tools;
 }

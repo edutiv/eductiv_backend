@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
@@ -28,6 +29,7 @@ public class Material extends BaseEntityWithDeletedAt{
 
     @ManyToOne
     @JoinColumn(name = "section_id", nullable = false)
+    @JsonBackReference
     private Section section;
 
     @Column(name = "material_type", nullable = false)
