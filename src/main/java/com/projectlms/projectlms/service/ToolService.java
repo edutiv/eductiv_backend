@@ -1,5 +1,6 @@
 package com.projectlms.projectlms.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,20 +54,38 @@ public class ToolService {
         }
     }
 
-    public ResponseEntity<Object> getAllTool() {
+    public ResponseEntity<Object> getAllTool(Long courseId) {
         try {
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             log.info("Get all tools");
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, toolRepository.findAll(), HttpStatus.OK);
+            List<Tool> tools = toolRepository.searchAll(courseId);
+            if (tools.isEmpty()) {
+                log.info("tools is empty");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, tools, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Get an error by get all tools, Error : {}",e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<Object> getToolDetail(Long id) {
+    public ResponseEntity<Object> getToolDetail(Long courseId, Long id) {
         try {
-            log.info("Find tool detail by tool id: {}", id);
-            Optional<Tool> toolDetail = toolRepository.findOne(id);
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
+            log.info("Find tool detail by id: {}", id);
+            Optional<Tool> toolDetail = toolRepository.searchById(id, courseId);
             if (toolDetail.isEmpty()) {
                 log.info("tool not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

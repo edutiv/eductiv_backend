@@ -1,5 +1,6 @@
 package com.projectlms.projectlms.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,20 +62,38 @@ public class ReviewService {
         }
     }
 
-    public ResponseEntity<Object> getAllReview() {
+    public ResponseEntity<Object> getAllReview(Long courseId) {
         try {
-            log.info("Get all reviews");
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, reviewRepository.findAll(), HttpStatus.OK);
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            log.info("Get all review");
+            List<Review> reviews = reviewRepository.searchAll(courseId);
+            if (reviews.isEmpty()) {
+                log.info("reviews is empty");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, reviews, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Get an error by get all reviews, Error : {}",e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<Object> getReviewDetail(Long id) {
+    public ResponseEntity<Object> getReviewDetail(Long courseId, Long id) {
         try {
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
             log.info("Find review detail by review id: {}", id);
-            Optional<Review> reviewDetail = reviewRepository.findOne(id);
+            Optional<Review> reviewDetail = reviewRepository.searchById(id, courseId);
             if (reviewDetail.isEmpty()) {
                 log.info("review not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

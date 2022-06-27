@@ -17,6 +17,7 @@ import com.projectlms.projectlms.service.ReviewService;
 @RestController
 @RequestMapping(value = "/course/{cid}/review")
 @CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
+
 public class ReviewController {
     private final ReviewService reviewService;
 
@@ -31,13 +32,13 @@ public class ReviewController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getAllReview() {
-        return reviewService.getAllReview();
+    public ResponseEntity<Object> getAllReview(@PathVariable(value = "cid") Long courseId) {
+        return reviewService.getAllReview(courseId);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Object> getReviewDetail(@PathVariable(value = "id") Long id) {
-        return reviewService.getReviewDetail(id);
+    public ResponseEntity<Object> getReviewDetail(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
+        return reviewService.getReviewDetail(courseId, id);
     }
 
     @DeleteMapping(value = "/{id}")

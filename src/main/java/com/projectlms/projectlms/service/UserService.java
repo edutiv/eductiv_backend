@@ -33,7 +33,7 @@ public class UserService {
             .lastname(request.getLastname())
             .email(request.getEmail())
             .password(request.getPassword())
-            .role(request.getRole())
+            //.role(request.getRole())
             .specialization(request.getSpecialization())
             .build();
         try {
@@ -70,7 +70,7 @@ public class UserService {
             user.get().setLastname(request.getLastname());
             user.get().setEmail(request.getEmail());
             user.get().setPassword(request.getPassword());
-            user.get().setRole(request.getRole());
+           // user.get().setRole(request.getRole());
             user.get().setSpecialization(request.getSpecialization());
             userRepository.save(user.get());
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, user.get(), HttpStatus.OK);

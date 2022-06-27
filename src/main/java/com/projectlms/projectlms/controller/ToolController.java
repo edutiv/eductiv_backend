@@ -17,6 +17,7 @@ import com.projectlms.projectlms.service.ToolService;
 @RestController
 @RequestMapping(value = "/course/{cid}/tool")
 @CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
+
 public class ToolController {
     private final ToolService toolService;
 
@@ -31,13 +32,13 @@ public class ToolController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getAllTool() {
-        return toolService.getAllTool();
+    public ResponseEntity<Object> getAllTool(@PathVariable(value = "cid") Long courseId) {
+        return toolService.getAllTool(courseId);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Object> getToolDetail(@PathVariable(value = "id") Long id) {
-        return toolService.getToolDetail(id);
+    public ResponseEntity<Object> getToolDetail(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
+        return toolService.getToolDetail(courseId, id);
     }
 
     @DeleteMapping(value = "/{id}")
