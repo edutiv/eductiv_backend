@@ -27,8 +27,8 @@ public abstract class BaseEntity implements Serializable{
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
+    // @Column(name = "created_by", nullable = false)
+    // private String createdBy;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
@@ -36,7 +36,7 @@ public abstract class BaseEntity implements Serializable{
     @PrePersist
     void onCreate() {
         this.createdAt = LocalDateTime.now();
-        if (createdBy == null) createdBy = "SYSTEM";
+        // if (createdBy == null) createdBy = "SYSTEM";
     }
 
     @PreUpdate

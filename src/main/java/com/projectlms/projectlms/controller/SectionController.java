@@ -42,8 +42,8 @@ public class SectionController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteSection(@PathVariable(value = "id") Long id) {
-        return sectionService.deleteSection(id);
+    public ResponseEntity<Object> deleteSection(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
+        return sectionService.deleteSection(courseId, id);
     }
 
     @PutMapping(value = "/{id}")

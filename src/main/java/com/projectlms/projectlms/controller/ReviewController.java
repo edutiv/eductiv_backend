@@ -42,8 +42,8 @@ public class ReviewController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteReview(@PathVariable(value = "id") Long id) {
-        return reviewService.deleteReview(id);
+    public ResponseEntity<Object> deleteReview(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
+        return reviewService.deleteReview(courseId, id);
     }
 
     @PutMapping(value = "/{id}")

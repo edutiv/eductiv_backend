@@ -42,13 +42,13 @@ public class MaterialController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteMaterial(@PathVariable(value = "id") Long id) {
-        return materialService.deleteMaterial(id);
+    public ResponseEntity<Object> deleteMaterial(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "sid") Long sectionId, @PathVariable(value = "id") Long id) {
+        return materialService.deleteMaterial(courseId, sectionId, id);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateMaterial(@PathVariable(value = "sid") Long sectionId, @PathVariable(value = "id") Long id, @RequestBody MaterialDto request) {
+    public ResponseEntity<Object> updateMaterial(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "sid") Long sectionId, @PathVariable(value = "id") Long id, @RequestBody MaterialDto request) {
         request.setSectionId(sectionId);
-        return materialService.updateMaterial(request, id);
+        return materialService.updateMaterial(courseId, request, id);
     }
 }

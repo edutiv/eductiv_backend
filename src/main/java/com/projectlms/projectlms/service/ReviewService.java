@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Course;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final CourseRepository courseRepository;
@@ -40,11 +42,11 @@ public class ReviewService {
             log.info("Save new review: {}", request);
 
             log.info("Find user by user id");
-            Optional<User> user = userRepository.findOne(request.getUserId());
+            Optional<User> user = userRepository.findById(request.getUserId());
             if(user.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             log.info("Find course by course id");
-            Optional<Course> course = courseRepository.findOne(request.getCourseId());
+            Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(user.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             Review review = Review.builder()
@@ -65,13 +67,13 @@ public class ReviewService {
     public ResponseEntity<Object> getAllReview(Long courseId) {
         try {
             log.info("Find course detail by course id: {}", courseId);
-            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
             if (courseDetail.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Get all review");
-            List<Review> reviews = reviewRepository.searchAll(courseId);
+            List<Review> reviews = reviewRepository.searchAllReviews(courseId);
             if (reviews.isEmpty()) {
                 log.info("reviews is empty");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -86,14 +88,14 @@ public class ReviewService {
     public ResponseEntity<Object> getReviewDetail(Long courseId, Long id) {
         try {
             log.info("Find course detail by course id: {}", courseId);
-            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
             if (courseDetail.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
 
             log.info("Find review detail by review id: {}", id);
-            Optional<Review> reviewDetail = reviewRepository.searchById(id, courseId);
+            Optional<Review> reviewDetail = reviewRepository.searchReviewById(id, courseId);
             if (reviewDetail.isEmpty()) {
                 log.info("review not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -105,10 +107,17 @@ public class ReviewService {
         }
     }
 
-    public ResponseEntity<Object> deleteReview(Long id) {
+    public ResponseEntity<Object> deleteReview(Long courseId, Long id) {
         try {
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
             log.info("Executing delete review by id: {}", id);
-            reviewRepository.delete(id);
+            reviewRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -119,13 +128,13 @@ public class ReviewService {
     public ResponseEntity<Object> updateReview(ReviewDto request, Long id) {
         try {
             log.info("Update review: {}", request);
-            Optional<Review> review = reviewRepository.findOne(id);
+            Optional<Review> review = reviewRepository.findById(id);
             if (review.isEmpty()) {
                 log.info("review not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Find course by course id");
-            Optional<Course> course = courseRepository.findOne(request.getCourseId());
+            Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(course.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

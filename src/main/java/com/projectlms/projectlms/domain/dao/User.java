@@ -6,15 +6,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.Collection;
-import java.util.HashSet;
+// import java.util.Collection;
+// import java.util.HashSet;
+// import java.util.Set;
 import java.util.List;
-import java.util.Set;
-
 import javax.persistence.*;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+// import org.springframework.security.core.GrantedAuthority;
+// import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -29,7 +28,7 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Table(name = "M_USER")
-public class User extends BaseEntityWithDeletedAt implements UserDetails{
+public class User extends BaseEntityWithDeletedAt {
     
     private static final long serialVersionUID = 1L;
 
@@ -66,31 +65,31 @@ public class User extends BaseEntityWithDeletedAt implements UserDetails{
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Review> reviews;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
+    // @ManyToMany(fetch = FetchType.LAZY)
+    // @JoinTable(
+    //         name = "user_roles",
+    //         joinColumns = @JoinColumn(name = "user_id"),
+    //         inverseJoinColumns = @JoinColumn(name = "role_id")
+    // )
+    // private Set<Role> roles = new HashSet<>();
 
-    @Column(columnDefinition = "boolean default true")
-    private boolean active = true;
+    // @Column(columnDefinition = "boolean default true")
+    // private boolean active = true;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {return null;}
+    // @Override
+    // public Collection<? extends GrantedAuthority> getAuthorities() {return null;}
 
-    @Override
-    public boolean isAccountNonExpired() {return active; }
+    // @Override
+    // public boolean isAccountNonExpired() {return active; }
     
-    @Override
-    public boolean isAccountNonLocked() {return active; }
+    // @Override
+    // public boolean isAccountNonLocked() {return active; }
 
-    @Override
-    public boolean isCredentialsNonExpired() {return active; }
+    // @Override
+    // public boolean isCredentialsNonExpired() {return active; }
 
-    @Override
-    public boolean isEnabled() {return active; }
+    // @Override
+    // public boolean isEnabled() {return active; }
 
     // public User(String firstname, String lastname, String email, String password, String role, String specialization) {
     //     this.firstname = firstname;

@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Category;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
@@ -55,7 +57,7 @@ public class CategoryService {
     public ResponseEntity<Object> getCategoryDetail (Long id) {
         try {
             log.info("Find category detail by category id: {}", id);
-            Optional<Category> categoryDetail = categoryRepository.findOne(id);
+            Optional<Category> categoryDetail = categoryRepository.searchCategoryById(id);
             if (categoryDetail.isEmpty()) {
                 log.info("category not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -70,7 +72,7 @@ public class CategoryService {
     public ResponseEntity<Object> updateCategory(CategoryDto request, Long id) {
         try {
             log.info("Update category: {}", request);
-            Optional<Category> category = categoryRepository.findOne(id);
+            Optional<Category> category = categoryRepository.searchCategoryById(id);
             if (category.isEmpty()) {
                 log.info("category not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -89,7 +91,7 @@ public class CategoryService {
     public ResponseEntity<Object> deleteCategory(Long id) {
         try {
             log.info("Executing delete category by id: {}", id);
-            categoryRepository.delete(id);
+            categoryRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

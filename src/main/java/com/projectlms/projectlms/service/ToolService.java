@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Course;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional
 public class ToolService {
     private final ToolRepository toolRepository;
     private final CourseRepository courseRepository;
@@ -36,7 +38,7 @@ public class ToolService {
             log.info("Save new tool: {}", request);
 
             log.info("Find course by course id");
-            Optional<Course> course = courseRepository.findOne(request.getCourseId());
+            Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(course.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             Tool tool = Tool.builder()
@@ -57,13 +59,13 @@ public class ToolService {
     public ResponseEntity<Object> getAllTool(Long courseId) {
         try {
             log.info("Find course detail by course id: {}", courseId);
-            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
             if (courseDetail.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Get all tools");
-            List<Tool> tools = toolRepository.searchAll(courseId);
+            List<Tool> tools = toolRepository.searchAllTools(courseId);
             if (tools.isEmpty()) {
                 log.info("tools is empty");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -78,14 +80,14 @@ public class ToolService {
     public ResponseEntity<Object> getToolDetail(Long courseId, Long id) {
         try {
             log.info("Find course detail by course id: {}", courseId);
-            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
             if (courseDetail.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
 
             log.info("Find tool detail by id: {}", id);
-            Optional<Tool> toolDetail = toolRepository.searchById(id, courseId);
+            Optional<Tool> toolDetail = toolRepository.searchToolById(id, courseId);
             if (toolDetail.isEmpty()) {
                 log.info("tool not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -100,13 +102,13 @@ public class ToolService {
     public ResponseEntity<Object> updateTool(ToolDto request, Long id) {
         try {
             log.info("Update tool: {}", request);
-            Optional<Tool> tool = toolRepository.findOne(id);
+            Optional<Tool> tool = toolRepository.findById(id);
             if (tool.isEmpty()) {
                 log.info("tool not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Find course by course id");
-            Optional<Course> course = courseRepository.findOne(request.getCourseId());
+            Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(course.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -124,10 +126,16 @@ public class ToolService {
         }
     }
 
-    public ResponseEntity<Object> deleteTool(Long id) {
+    public ResponseEntity<Object> deleteTool(Long courseId, Long id) {
         try {
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             log.info("Executing delete tool by id: {}", id);
-            toolRepository.delete(id);
+            toolRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

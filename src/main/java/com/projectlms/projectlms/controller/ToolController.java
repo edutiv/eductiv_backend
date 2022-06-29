@@ -42,8 +42,8 @@ public class ToolController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteTool(@PathVariable(value = "id") Long id) {
-        return toolService.deleteTool(id);
+    public ResponseEntity<Object> deleteTool(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
+        return toolService.deleteTool(courseId, id);
     }
 
     @PutMapping(value = "/{id}")

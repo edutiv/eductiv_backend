@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Course;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional
 public class EnrolledCourseService {
     
     private final EnrolledCourseRepository enrolledCourseRepository;
@@ -40,11 +42,11 @@ public class EnrolledCourseService {
             log.info("Save new enrolled course: {}", request);
 
             log.info("Find user by user id");
-            Optional<User> user = userRepository.findOne(request.getUserId());
+            Optional<User> user = userRepository.findById(request.getUserId());
             if(user.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             log.info("Find course by course id");
-            Optional<Course> course = courseRepository.findOne(request.getCourseId());
+            Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(user.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             EnrolledCourse enrolledCourse = EnrolledCourse.builder()
@@ -73,7 +75,7 @@ public class EnrolledCourseService {
     public ResponseEntity<Object> getEnrolledCourseDetail(Long id) {
         try {
             log.info("Find request detail by enrolled course id: {}", id);
-            Optional<EnrolledCourse> enrolledCourseDetail = enrolledCourseRepository.findOne(id);
+            Optional<EnrolledCourse> enrolledCourseDetail = enrolledCourseRepository.findById(id);
             if (enrolledCourseDetail.isEmpty()) {
                 log.info("enrolled course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -88,7 +90,7 @@ public class EnrolledCourseService {
     public ResponseEntity<Object> deleteEnrolledCourse(Long id) {
         try {
             log.info("Executing delete enrolled course by id: {}", id);
-            enrolledCourseRepository.delete(id);
+            enrolledCourseRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

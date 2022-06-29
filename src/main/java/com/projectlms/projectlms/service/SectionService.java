@@ -8,12 +8,14 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Course;
 import com.projectlms.projectlms.domain.dao.Section;
 import com.projectlms.projectlms.domain.dto.SectionDto;
 import com.projectlms.projectlms.repository.CourseRepository;
+import com.projectlms.projectlms.repository.MaterialRepository;
 import com.projectlms.projectlms.repository.SectionRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
@@ -21,14 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Transactional
 public class SectionService {
     private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
+    private final MaterialRepository materialRepository;
 
     @Autowired
-    public SectionService(SectionRepository sectionRepository, CourseRepository courseRepository) {
+    public SectionService(SectionRepository sectionRepository, CourseRepository courseRepository, MaterialRepository materialRepository) {
         this.sectionRepository = sectionRepository;
         this.courseRepository = courseRepository;
+        this.materialRepository = materialRepository;
     }
 
     public ResponseEntity<Object> addSection(SectionDto request) {
@@ -36,7 +41,7 @@ public class SectionService {
             log.info("Save new section: {}", request);
 
             log.info("Find course by course id");
-            Optional<Course> course = courseRepository.findOne(request.getCourseId());
+            Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(course.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             Section section = Section.builder()
@@ -55,13 +60,13 @@ public class SectionService {
     public ResponseEntity<Object> getAllSection(Long courseId) {
         try {
             log.info("Find course detail by course id: {}", courseId);
-            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
             if (courseDetail.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Get all section");
-            List<Section> sections = sectionRepository.searchAll(courseId);
+            List<Section> sections = sectionRepository.searchAllSections(courseId);
             if (sections.isEmpty()) {
                 log.info("sections is empty");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -77,14 +82,14 @@ public class SectionService {
     public ResponseEntity<Object> getSectionDetail(Long courseId, Long id) {
         try {
             log.info("Find course detail by course id: {}", courseId);
-            Optional<Course> courseDetail = courseRepository.findOne(courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
             if (courseDetail.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
 
             log.info("Find section detail by id: {}", id);
-            Optional<Section> sectionDetail = sectionRepository.searchById(id, courseId);
+            Optional<Section> sectionDetail = sectionRepository.searchSectionById(id, courseId);
             if (sectionDetail.isEmpty()) {
                 log.info("section not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -98,19 +103,20 @@ public class SectionService {
 
     public ResponseEntity<Object> updateSection(SectionDto request, Long id) {
         try {
-            log.info("Update section: {}", request);
-            Optional<Section> section = sectionRepository.findOne(id);
-            if (section.isEmpty()) {
-                log.info("section not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
             log.info("Find course by course id");
-            Optional<Course> course = courseRepository.findOne(request.getCourseId());
+            Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(course.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
 
+            log.info("Find section by section id");
+            Optional<Section> section = sectionRepository.findById(id);
+            if (section.isEmpty()) {
+                log.info("section not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            log.info("Update section: {}", request);
             section.get().setCourse(course.get());
             section.get().setSectionName(request.getSectionName());
             sectionRepository.save(section.get());
@@ -121,10 +127,17 @@ public class SectionService {
         }
     }
 
-    public ResponseEntity<Object> deleteSection(Long id) {
+    public ResponseEntity<Object> deleteSection(Long courseId, Long id) {
         try {
+            log.info("Find course detail by course id: {}", courseId);
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             log.info("Executing delete section by id: {}", id);
-            sectionRepository.delete(id);
+            sectionRepository.deleteById(id);
+            materialRepository.deleteMaterialBySection(id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
