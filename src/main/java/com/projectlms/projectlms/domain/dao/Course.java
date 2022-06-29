@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -54,7 +55,7 @@ public class Course extends BaseEntityWithDeletedAt {
     private List<Section> sections;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
-    @JsonManagedReference
+    @JsonBackReference
     private List<EnrolledCourse> enrolledCourses;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")

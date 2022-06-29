@@ -12,10 +12,14 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 // import org.springframework.security.core.GrantedAuthority;
 // import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+//import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
@@ -57,8 +61,9 @@ public class User extends BaseEntityWithDeletedAt {
     @Column(name = "specialization", nullable =  false)
     private String specialization;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonManagedReference
+    //@JsonBackReference
     private List<EnrolledCourse> enrolledCourses;
 
     @JsonIgnore
