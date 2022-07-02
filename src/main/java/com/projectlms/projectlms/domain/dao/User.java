@@ -1,25 +1,18 @@
 package com.projectlms.projectlms.domain.dao;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-// import java.util.Collection;
-// import java.util.HashSet;
-// import java.util.Set;
+//import java.util.Set;
 import java.util.List;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
-// import org.springframework.security.core.GrantedAuthority;
-// import org.springframework.security.core.userdetails.UserDetails;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-//import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
@@ -27,12 +20,12 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Table(name = "M_USER")
-public class User extends BaseEntityWithDeletedAt {
+public class User extends BaseEntityWithDeletedAt{
     
     private static final long serialVersionUID = 1L;
 
@@ -40,14 +33,11 @@ public class User extends BaseEntityWithDeletedAt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "firstname", nullable =  false)
+    @Column(name = "firstname")
     private String firstname;
 
-    @Column(name = "lastname", nullable =  false)
+    @Column(name = "lastname")
     private String lastname;
-
-    @Column(name = "email", nullable =  false)
-    private String email;
 
     @Column(name = "username", nullable =  false)
     private String username;
@@ -55,54 +45,35 @@ public class User extends BaseEntityWithDeletedAt {
     @Column(name = "password", nullable =  false)
     private String password;
 
-    // @Column(name = "role", nullable =  false)
-    // private String role;
+    @ManyToOne
+    @JoinColumn(name = "specialization_id", nullable = false)
+    private Category category;
 
-    @Column(name = "specialization", nullable =  false)
-    private String specialization;
+    // @Column(name = "specialization")
+    // private String specialization;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    //@JsonBackReference
+    @JsonManagedReference
+    private List<EnrolledCourse> enrolledCourses;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @JsonManagedReference
-    //@JsonBackReference
-    private List<EnrolledCourse> enrolledCourses;
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Review> reviews;
 
-    // @ManyToMany(fetch = FetchType.LAZY)
+    // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     // @JoinTable(
     //         name = "user_roles",
     //         joinColumns = @JoinColumn(name = "user_id"),
     //         inverseJoinColumns = @JoinColumn(name = "role_id")
     // )
-    // private Set<Role> roles = new HashSet<>();
+    // @JsonIgnore
+    // private Set<Role> roles;
 
-    // @Column(columnDefinition = "boolean default true")
-    // private boolean active = true;
-
-    // @Override
-    // public Collection<? extends GrantedAuthority> getAuthorities() {return null;}
-
-    // @Override
-    // public boolean isAccountNonExpired() {return active; }
-    
-    // @Override
-    // public boolean isAccountNonLocked() {return active; }
-
-    // @Override
-    // public boolean isCredentialsNonExpired() {return active; }
-
-    // @Override
-    // public boolean isEnabled() {return active; }
-
-    // public User(String firstname, String lastname, String email, String password, String role, String specialization) {
-    //     this.firstname = firstname;
-    //     this.lastname = lastname;
+    // public User(String username, String email, String password) {
+    //     this.username = username;
     //     this.email = email;
     //     this.password = password;
-    //     this.role = role;
-    //     this.specialization = specialization;
     // }
 
 }

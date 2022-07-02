@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.projectlms.projectlms.constant.AppConstant;
+import com.projectlms.projectlms.domain.dao.Category;
 import com.projectlms.projectlms.domain.dao.User;
 import com.projectlms.projectlms.domain.dto.UserDto;
+import com.projectlms.projectlms.repository.CategoryRepository;
 import com.projectlms.projectlms.repository.UserRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
@@ -22,21 +24,28 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,CategoryRepository categoryRepository) {
         this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public ResponseEntity<Object> addUser(UserDto request) {
         log.info("Save new user: {}", request);
+
+        log.info("Find specialization by category id");
+            Optional<Category> category = categoryRepository.searchCategoryById(request.getSpecializationId());
+            if(category.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+
         User user = User.builder()
             .firstname(request.getFirstname())
             .lastname(request.getLastname())
-            .email(request.getEmail())
-            .password(request.getPassword())
+            //.email(request.getEmail())
             .username(request.getUsername())
-            .specialization(request.getSpecialization())
+            .password(request.getPassword())
+            .category(category.get())
             .build();
         try {
             user = userRepository.save(user);
@@ -67,13 +76,15 @@ public class UserService {
                 log.info("user not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
+            log.info("Find specialization by category id");
+            Optional<Category> category = categoryRepository.searchCategoryById(request.getSpecializationId());
+            if(category.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             user.get().setFirstname(request.getFirstname());
             user.get().setLastname(request.getLastname());
-            user.get().setEmail(request.getEmail());
+            user.get().setUsername(request.getUsername());
             user.get().setPassword(request.getPassword());
-           // user.get().setRole(request.getRole());
-            user.get().setSpecialization(request.getSpecialization());
+            user.get().setCategory(category.get());
             userRepository.save(user.get());
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, user.get(), HttpStatus.OK);
         } catch (Exception e) {

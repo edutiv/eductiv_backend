@@ -1,5 +1,7 @@
 package com.projectlms.projectlms.controller;
 
+import java.security.Principal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,5 +43,15 @@ public class EnrolledCourseController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteEnrolledCourse(@PathVariable(value = "id") Long id) {
         return requestService.deleteEnrolledCourse(id);
+    }
+
+    @GetMapping(value = "/history")
+    public ResponseEntity<Object> getEnrolledCourseByUser(Principal principal) {
+        return requestService.getEnrolledCourseByUser(principal.getName());
+    }
+
+    @GetMapping(value = "/courses/{id}")
+    public ResponseEntity<Object> getEnrolledCourseByCourse(@PathVariable Long id) {
+        return requestService.getEnrolledCourseByCourse(id);
     }
 }

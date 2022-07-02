@@ -56,6 +56,7 @@ public class Course extends BaseEntityWithDeletedAt {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
     @JsonBackReference
+    //@JsonManagedReference
     private List<EnrolledCourse> enrolledCourses;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")

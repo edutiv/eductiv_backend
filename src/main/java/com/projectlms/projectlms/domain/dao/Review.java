@@ -30,6 +30,7 @@ public class Review extends BaseEntityWithDeletedAt{
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne

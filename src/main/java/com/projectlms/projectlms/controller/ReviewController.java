@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class ReviewController {
     }
 
     @PostMapping(value = "")
+    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> addReview(@PathVariable(value = "cid") Long courseId, @RequestBody ReviewDto request) {
         request.setCourseId(courseId);
         return reviewService.addReview(request);
@@ -42,11 +44,13 @@ public class ReviewController {
     }
 
     @DeleteMapping(value = "/{id}")
+    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> deleteReview(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
         return reviewService.deleteReview(courseId, id);
     }
 
     @PutMapping(value = "/{id}")
+    //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> updateReview(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody ReviewDto request) {
         request.setCourseId(courseId);
         return reviewService.updateReview(request, id);

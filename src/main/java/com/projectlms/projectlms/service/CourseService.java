@@ -13,12 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Category;
 import com.projectlms.projectlms.domain.dao.Course;
+import com.projectlms.projectlms.domain.dao.User;
 import com.projectlms.projectlms.domain.dto.CourseDto;
 import com.projectlms.projectlms.repository.CategoryRepository;
 import com.projectlms.projectlms.repository.CourseRepository;
 import com.projectlms.projectlms.repository.ReviewRepository;
 import com.projectlms.projectlms.repository.SectionRepository;
 import com.projectlms.projectlms.repository.ToolRepository;
+import com.projectlms.projectlms.repository.UserRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +35,16 @@ public class CourseService {
     private final SectionRepository sectionRepository;
     private final ToolRepository toolRepository;
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, CategoryRepository categoryRepository, SectionRepository sectionRepository, ToolRepository toolRepository, ReviewRepository reviewRepository) {
+    public CourseService(CourseRepository courseRepository, CategoryRepository categoryRepository, SectionRepository sectionRepository, ToolRepository toolRepository, ReviewRepository reviewRepository, UserRepository userRepository) {
         this.courseRepository = courseRepository;
         this.categoryRepository = categoryRepository;
         this.sectionRepository = sectionRepository;
         this.toolRepository = toolRepository;
         this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
     }
 
     public ResponseEntity<Object> addCourse(CourseDto request) {
@@ -139,5 +143,41 @@ public class CourseService {
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> getCourseByUserSpecialization(String email) {
+        try {
+            log.info("Get user");
+            User user = userRepository.findUsername(email);
+            if(user.getCategory() == null) throw new Exception("User don't have specialization");
+            
+            log.info("Get courses by user specialization");
+            List<Course> courses = courseRepository.searchCourseByCategory(user.getCategory().getId());
+            if (courses.isEmpty()) {
+                log.info("courses with category " + user.getCategory().getCategoryName() + " is empty");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, courses, HttpStatus.OK);
+        
+        } catch (Exception e) {
+            log.error("Get an error by get course by user specialization, Error : {}",e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<Object> getCourseByCourseName(String course_name) {
+        try {
+            log.info("Get courses by course name");
+            List<Course> courses = courseRepository.findByName(course_name);
+            if (courses.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, courses, HttpStatus.OK);
+        
+        } catch (Exception e) {
+            log.error("Get an error by searching course by name, Error : {}",e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

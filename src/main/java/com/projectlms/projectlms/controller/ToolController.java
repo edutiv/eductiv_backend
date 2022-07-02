@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class ToolController {
     }
 
     @PostMapping(value = "")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> addTool(@PathVariable(value = "cid") Long courseId, @RequestBody ToolDto request) {
         request.setCourseId(courseId);
         return toolService.addTool(request);
@@ -42,11 +44,13 @@ public class ToolController {
     }
 
     @DeleteMapping(value = "/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> deleteTool(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
         return toolService.deleteTool(courseId, id);
     }
 
     @PutMapping(value = "/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateTool(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody ToolDto request) {
         request.setCourseId(courseId);
         return toolService.updateTool(request, id);

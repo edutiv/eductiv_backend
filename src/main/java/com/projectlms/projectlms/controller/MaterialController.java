@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class MaterialController {
     }
 
     @PostMapping(value = "")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> addMaterial(@PathVariable(value = "sid") Long sectionId, @RequestBody MaterialDto request) {
         request.setSectionId(sectionId);
         return materialService.addMaterial(request);
@@ -42,11 +44,13 @@ public class MaterialController {
     }
 
     @DeleteMapping(value = "/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> deleteMaterial(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "sid") Long sectionId, @PathVariable(value = "id") Long id) {
         return materialService.deleteMaterial(courseId, sectionId, id);
     }
 
     @PutMapping(value = "/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateMaterial(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "sid") Long sectionId, @PathVariable(value = "id") Long id, @RequestBody MaterialDto request) {
         request.setSectionId(sectionId);
         return materialService.updateMaterial(courseId, request, id);

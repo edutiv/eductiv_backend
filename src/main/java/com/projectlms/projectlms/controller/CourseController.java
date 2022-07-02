@@ -1,6 +1,9 @@
 package com.projectlms.projectlms.controller;
 
+import java.security.Principal;
+
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projectlms.projectlms.domain.dto.CourseDto;
@@ -26,6 +30,7 @@ public class CourseController {
     }
 
     @PostMapping(value = "")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> addCourse(@RequestBody CourseDto request) {
         return courseService.addCourse(request);
     }
@@ -41,13 +46,26 @@ public class CourseController {
     }
 
     @DeleteMapping(value = "/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> deleteCourse(@PathVariable(value = "id") Long id) {
         return courseService.deleteCourse(id);
     }
 
     @PutMapping(value = "/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateCourse(@PathVariable(value = "id") Long id, @RequestBody CourseDto request) {
         return courseService.updateCourse(request, id);
     }
+
+    @GetMapping(value = "/recommendations")
+    public ResponseEntity<Object> getCourseByUserSpecialization(Principal principal) {
+        return courseService.getCourseByUserSpecialization(principal.getName());
+    }
+
+    @GetMapping(value = "/search")
+    public ResponseEntity<Object> getCourseByCourseName(@RequestParam(value = "q") String course_name) {
+        return courseService.getCourseByCourseName(course_name);
+    }
+
 
 }

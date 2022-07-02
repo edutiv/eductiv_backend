@@ -1,5 +1,6 @@
 package com.projectlms.projectlms.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,43 @@ public class EnrolledCourseService {
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Object> getEnrolledCourseByUser(String email) {
+        try {
+            log.info("Find user: {}", email);
+
+            User user = userRepository.findUsername(email);
+            List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByUser(user.getId());
+
+            if (enrolledCourses.isEmpty()) {
+                log.info("enrolled courses empty");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourses, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Get an error by executing get enrolled course by user, Error : {}",e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<Object> getEnrolledCourseByCourse(Long id) {
+        try {
+            log.info("Find course by course id");
+            Optional<Course> course = courseRepository.findById(id);
+            
+            if(course.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            
+            List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByCourse(id);
+            if (enrolledCourses.isEmpty()) {
+                log.info("enrolled courses empty");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourses, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Get an error by executing get enrolled course by course, Error : {}",e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // public ResponseEntity<Object> updateRequest(EnrolledCourseDto request, Long id) {
