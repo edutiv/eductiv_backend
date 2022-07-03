@@ -3,7 +3,7 @@ package com.projectlms.projectlms.controller;
 import java.security.Principal;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +17,7 @@ import com.projectlms.projectlms.service.EnrolledCourseService;
 
 @RestController
 @RequestMapping(value = "/enrolled")
-@CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
+//@CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
 public class EnrolledCourseController {
     private final EnrolledCourseService requestService;
 

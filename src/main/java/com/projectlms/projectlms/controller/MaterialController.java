@@ -2,7 +2,7 @@ package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +17,7 @@ import com.projectlms.projectlms.service.MaterialService;
 
 @RestController
 @RequestMapping(value = "/course/{cid}/section/{sid}/material")
-@CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
+//@CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
 
 public class MaterialController {
     private final MaterialService materialService;
