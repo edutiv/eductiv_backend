@@ -20,9 +20,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query(value = "SELECT * from M_COURSE c WHERE c.category_id = ?", nativeQuery = true)
     List<Course> searchCourseByCategory(Long id);
 
-    //select course berdasarkan nama
-    @Query(value = "select c from M_COURSE c where lower(c.course_name) like lower(concat('%', :course_name,'%'))", nativeQuery = true)
-    public List<Course> findByName(@Param("course_name") String course_name);
-
+    //searching course
+    @Query(value = "SELECT * FROM M_COURSE c WHERE lower(c.course_name) like lower(concat('%', :course_name,'%'))", nativeQuery = true)
+    List<Course> searchByCourseName(String course_name);
+    
     //hapus course berdasarkan category
 }

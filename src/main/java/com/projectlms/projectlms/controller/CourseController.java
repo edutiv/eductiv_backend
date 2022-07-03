@@ -62,10 +62,15 @@ public class CourseController {
         return courseService.getCourseByUserSpecialization(principal.getName());
     }
 
-    @GetMapping(value = "/search")
-    public ResponseEntity<Object> getCourseByCourseName(@RequestParam(value = "q") String course_name) {
-        return courseService.getCourseByCourseName(course_name);
+    @GetMapping(value = "/search/{course_name}")
+    public ResponseEntity<Object> searchByCourseName(@PathVariable(value = "course_name") String course_name) {
+        return courseService.searchByCourseName(course_name);
     }
+
+    // @GetMapping(value = "/search")
+    // public ResponseEntity<Object> getCourseByCourseName(@RequestParam(value = "q") String course_name) {
+    //     return courseService.getCourseByCourseName(course_name);
+    // }
 
 
 }

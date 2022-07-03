@@ -165,10 +165,10 @@ public class CourseService {
         }
     }
 
-    public ResponseEntity<Object> getCourseByCourseName(String course_name) {
+    public ResponseEntity<Object> searchByCourseName(String course_name) {
         try {
             log.info("Get courses by course name");
-            List<Course> courses = courseRepository.findByName(course_name);
+            List<Course> courses = courseRepository.searchByCourseName(course_name);
             if (courses.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -180,4 +180,20 @@ public class CourseService {
             return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // public ResponseEntity<Object> getCourseByCourseName(String course_name) {
+    //     try {
+    //         log.info("Get courses by course name");
+    //         List<Course> courses = courseRepository.findByName(course_name);
+    //         if (courses.isEmpty()) {
+    //             log.info("course not found");
+    //             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+    //         }
+    //         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, courses, HttpStatus.OK);
+        
+    //     } catch (Exception e) {
+    //         log.error("Get an error by searching course by name, Error : {}",e.getMessage());
+    //         return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 }
