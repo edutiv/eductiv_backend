@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
@@ -30,7 +31,8 @@ public class Review extends BaseEntityWithDeletedAt{
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonManagedReference
     private User user;
 
     @ManyToOne

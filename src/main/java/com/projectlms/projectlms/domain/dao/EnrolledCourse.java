@@ -32,13 +32,13 @@ public class EnrolledCourse extends BaseEntityWithDeletedAt{
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
-    //@JsonManagedReference
+    //@JsonBackReference
+    @JsonManagedReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    @JsonManagedReference
-    //@JsonBackReference
+    //@JsonManagedReference
+    @JsonBackReference
     private Course course;
 }

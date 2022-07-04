@@ -53,12 +53,13 @@ public class User extends BaseEntityWithDeletedAt{
     // private String specialization;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    //@JsonBackReference
-    @JsonManagedReference
+    @JsonBackReference
+    //@JsonManagedReference
     private List<EnrolledCourse> enrolledCourses;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonManagedReference
+    //@JsonManagedReference
+    @JsonBackReference
     private List<Review> reviews;
 
     // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
