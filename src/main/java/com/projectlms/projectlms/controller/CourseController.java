@@ -54,7 +54,7 @@ public class CourseController {
     @PutMapping(value = "/{id}")
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateCourse(@PathVariable(value = "id") Long id, @RequestBody CourseDto request) {
-        return courseService.updateCourse(request, id);
+        return courseService.updateCourse(id, request);
     }
 
     @GetMapping(value = "/recommendations")

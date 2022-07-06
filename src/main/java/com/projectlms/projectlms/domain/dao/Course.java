@@ -41,8 +41,19 @@ public class Course extends BaseEntityWithDeletedAt {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description; 
+
+    @ElementCollection
+    @CollectionTable(name = "learning_objectives")
+    @Column(columnDefinition = "TEXT")
+    private List<String> learningObjectives;
+
+    @ElementCollection
+    @CollectionTable(name = "advantages")
+    @Column(columnDefinition = "TEXT")
+    private List<String> advantages;
+
 
     @Column(name = "total_video", nullable = false)
     private Integer totalVideo;

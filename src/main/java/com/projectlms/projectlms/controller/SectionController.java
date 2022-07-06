@@ -53,6 +53,6 @@ public class SectionController {
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateSection(@PathVariable (value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody SectionDto request) {
         request.setCourseId(courseId);
-        return sectionService.updateSection(request, id);
+        return sectionService.updateSection(id, request);
     }
 }

@@ -53,7 +53,7 @@ public class Application {
 				registry.addMapping("/**")
 						.allowedMethods("GET", "POST", "PUT", "DELETE")
 						.allowCredentials(true)
-						.allowedOrigins("http://localhost:3000", "https://edutiv-web.vercel.app", "https://edutiv-capstone.herokuapp.com", "https://edutiv-springboot.herokuapp.com");
+						.allowedOrigins("http://localhost:3000", "https://edutiv-web.vercel.app", "https://edutiv-capstone.herokuapp.com");
 			}    
 		};
 	}

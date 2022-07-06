@@ -39,12 +39,18 @@ public class MaterialService {
 
     public ResponseEntity<Object> addMaterial(MaterialDto request) {
         try {
-            log.info("Save new material: {}", request);
-
+            
+            log.info("Find course by course id: {}");
+            Optional<Course> courseDetail = courseRepository.searchCourseById(request.getCourseId());
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             log.info("Find section by section id");
-            Optional<Section> section = sectionRepository.findById(request.getSectionId());
+            Optional<Section> section = sectionRepository.searchSectionById(request.getSectionId(), request.getCourseId());
             if(section.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-
+            
+            log.info("Save new material: {}", request);
             Material material = Material.builder()
                 .section(section.get())
                 .materialType(request.getMaterialType())
@@ -119,22 +125,22 @@ public class MaterialService {
         }
     }
 
-    public ResponseEntity<Object> updateMaterial(Long courseId, MaterialDto request, Long id) {
+    public ResponseEntity<Object> updateMaterial(Long id, MaterialDto request) {
         try {
-            log.info("Find course by course id: {}", courseId);
-            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
+            log.info("Find course by course id: {}");
+            Optional<Course> courseDetail = courseRepository.searchCourseById(request.getCourseId());
             if (courseDetail.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Find section by section id");
-            Optional<Section> section = sectionRepository.findById(request.getSectionId());
+            Optional<Section> section = sectionRepository.searchSectionById(request.getSectionId(), request.getCourseId());
             if (section.isEmpty()) { 
                 log.info("section not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Find material by material id");
-            Optional<Material> material = materialRepository.findById(id);
+            Optional<Material> material = materialRepository.searchMaterialById(id, request.getSectionId());
             if(material.isEmpty()) {
                 log.info("material not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -144,7 +150,7 @@ public class MaterialService {
             material.get().setMaterialType(request.getMaterialType());
             material.get().setMaterialName(request.getMaterialName());
             material.get().setMaterialUrl(request.getMaterialUrl());
-            material.get().setIsCompleted(request.getIsComplete());
+            //material.get().setIsCompleted(request.getIsComplete());
             materialRepository.save(material.get());
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, material.get(), HttpStatus.OK);
         } catch (Exception e) {
@@ -155,10 +161,22 @@ public class MaterialService {
 
     public ResponseEntity<Object> deleteMaterial(Long courseId, Long sectionId, Long id) {
         try {
+            log.info("Find course by course id: {}");
+            Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
+            if (courseDetail.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             log.info("Find section by section id");
             Optional<Section> section = sectionRepository.searchSectionById(sectionId, courseId);
             if (section.isEmpty()) {
                 log.info("section not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            log.info("Find material by material id");
+            Optional<Material> material = materialRepository.searchMaterialById(id, sectionId);
+            if(material.isEmpty()) {
+                log.info("material not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Executing delete material by id: {}", id);

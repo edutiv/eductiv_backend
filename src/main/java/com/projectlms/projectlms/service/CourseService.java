@@ -60,6 +60,8 @@ public class CourseService {
                 .courseImage(request.getCourseImage())
                 .category(category.get())
                 .description(request.getDescription())
+                .learningObjectives(request.getLearningObjectives())
+                .advantages(request.getAdvantages())
                 .totalVideo(request.getTotalVideo())
                 .totalTimes(request.getTotalTimes())
                 .build();
@@ -102,7 +104,7 @@ public class CourseService {
         }
     }
 
-    public ResponseEntity<Object> updateCourse(CourseDto request, Long id) {
+    public ResponseEntity<Object> updateCourse(Long id, CourseDto request) {
         try {
             log.info("Update course: {}", request);
             Optional<Course> course = courseRepository.searchCourseById(id);
@@ -121,6 +123,8 @@ public class CourseService {
             course.get().setCourseImage(request.getCourseImage());
             course.get().setCategory(category.get());
             course.get().setDescription(request.getDescription());
+            course.get().setLearningObjectives(request.getLearningObjectives());
+            course.get().setAdvantages(request.getAdvantages());
             course.get().setTotalVideo(request.getTotalVideo());
             course.get().setTotalTimes(request.getTotalTimes());
             courseRepository.save(course.get());
@@ -180,20 +184,4 @@ public class CourseService {
             return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    // public ResponseEntity<Object> getCourseByCourseName(String course_name) {
-    //     try {
-    //         log.info("Get courses by course name");
-    //         List<Course> courses = courseRepository.findByName(course_name);
-    //         if (courses.isEmpty()) {
-    //             log.info("course not found");
-    //             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-    //         }
-    //         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, courses, HttpStatus.OK);
-        
-    //     } catch (Exception e) {
-    //         log.error("Get an error by searching course by name, Error : {}",e.getMessage());
-    //         return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
 }

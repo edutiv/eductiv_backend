@@ -101,7 +101,7 @@ public class SectionService {
         }
     }
 
-    public ResponseEntity<Object> updateSection(SectionDto request, Long id) {
+    public ResponseEntity<Object> updateSection(Long id, SectionDto request) {
         try {
             log.info("Find course by course id");
             Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
@@ -111,7 +111,7 @@ public class SectionService {
             }
 
             log.info("Find section by section id");
-            Optional<Section> section = sectionRepository.findById(id);
+            Optional<Section> section = sectionRepository.searchSectionById(id, request.getCourseId());
             if (section.isEmpty()) {
                 log.info("section not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -135,6 +135,13 @@ public class SectionService {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
+            log.info("Find section by section id");
+            Optional<Section> section = sectionRepository.searchSectionById(id, courseId);
+            if (section.isEmpty()) {
+                log.info("section not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+
             log.info("Executing delete section by id: {}", id);
             sectionRepository.deleteById(id);
             materialRepository.deleteMaterialBySection(id);

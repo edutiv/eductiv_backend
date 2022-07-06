@@ -28,7 +28,8 @@ public class MaterialController {
 
     @PostMapping(value = "")
     //@PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> addMaterial(@PathVariable(value = "sid") Long sectionId, @RequestBody MaterialDto request) {
+    public ResponseEntity<Object> addMaterial(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "sid") Long sectionId, @RequestBody MaterialDto request) {
+        request.setCourseId(courseId);
         request.setSectionId(sectionId);
         return materialService.addMaterial(request);
     }
@@ -52,7 +53,8 @@ public class MaterialController {
     @PutMapping(value = "/{id}")
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateMaterial(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "sid") Long sectionId, @PathVariable(value = "id") Long id, @RequestBody MaterialDto request) {
+        request.setCourseId(courseId);
         request.setSectionId(sectionId);
-        return materialService.updateMaterial(courseId, request, id);
+        return materialService.updateMaterial(id, request);
     }
 }
