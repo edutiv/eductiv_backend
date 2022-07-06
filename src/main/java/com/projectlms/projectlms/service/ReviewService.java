@@ -115,6 +115,12 @@ public class ReviewService {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
+            log.info("Find review");
+            Optional<Review> review = reviewRepository.searchReviewById(id, courseId);
+            if (review.isEmpty()) {
+                log.info("review not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
 
             log.info("Executing delete review by id: {}", id);
             reviewRepository.deleteById(id);
@@ -125,20 +131,21 @@ public class ReviewService {
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }
 
-    public ResponseEntity<Object> updateReview(ReviewDto request, Long id) {
+    public ResponseEntity<Object> updateReview(Long id, ReviewDto request) {
         try {
-            log.info("Update review: {}", request);
-            Optional<Review> review = reviewRepository.findById(id);
-            if (review.isEmpty()) {
-                log.info("review not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
             log.info("Find course by course id");
             Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(course.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
+            log.info("Find review");
+            Optional<Review> review = reviewRepository.searchReviewById(id, request.getCourseId());
+            if (review.isEmpty()) {
+                log.info("review not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            log.info("Update review: {}", request);
             review.get().setRating(request.getRating());
             review.get().setReview(request.getReview());
             review.get().setCourse(course.get());

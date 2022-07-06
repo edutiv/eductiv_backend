@@ -99,14 +99,9 @@ public class ToolService {
         }
     }
 
-    public ResponseEntity<Object> updateTool(ToolDto request, Long id) {
+    public ResponseEntity<Object> updateTool(Long id, ToolDto request) {
         try {
-            log.info("Update tool: {}", request);
-            Optional<Tool> tool = toolRepository.findById(id);
-            if (tool.isEmpty()) {
-                log.info("tool not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
+
             log.info("Find course by course id");
             Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
             if(course.isEmpty()) {
@@ -114,6 +109,13 @@ public class ToolService {
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
 
+            log.info("Update tool: {}", request);
+            Optional<Tool> tool = toolRepository.searchToolById(id, request.getCourseId());
+            if (tool.isEmpty()) {
+                log.info("tool not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            
             tool.get().setToolName(request.getToolName());
             tool.get().setToolIcon(request.getToolIcon());
             tool.get().setToolUrl(request.getToolUrl());
@@ -132,6 +134,12 @@ public class ToolService {
             Optional<Course> courseDetail = courseRepository.searchCourseById(courseId);
             if (courseDetail.isEmpty()) {
                 log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            log.info("Find tool by tool id");
+            Optional<Tool> tool = toolRepository.searchToolById(id, courseId);
+            if (tool.isEmpty()) {
+                log.info("tool not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             log.info("Executing delete tool by id: {}", id);

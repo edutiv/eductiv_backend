@@ -10,6 +10,9 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 import javax.persistence.*;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,6 +27,8 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@SQLDelete(sql = "UPDATE M_USER SET is_deleted = true WHERE id=?")
+@Where(clause = "is_deleted = false")
 @Table(name = "M_USER")
 public class User extends BaseEntityWithDeletedAt{
     
@@ -46,7 +51,7 @@ public class User extends BaseEntityWithDeletedAt{
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "specialization_id", nullable = false)
+    @JoinColumn(name = "specialization_id")
     private Category category;
 
     // @Column(name = "specialization")

@@ -53,6 +53,6 @@ public class ToolController {
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateTool(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody ToolDto request) {
         request.setCourseId(courseId);
-        return toolService.updateTool(request, id);
+        return toolService.updateTool(id, request);
     }
 }

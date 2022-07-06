@@ -53,7 +53,7 @@ public class ReviewController {
     //@PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> updateReview(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody ReviewDto request) {
         request.setCourseId(courseId);
-        return reviewService.updateReview(request, id);
+        return reviewService.updateReview(id,request);
     }
     
 }
