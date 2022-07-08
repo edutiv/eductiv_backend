@@ -27,7 +27,7 @@ public class JwtProvider {
         //claims.put("email", userPrincipal.getUsername());
 
         return Jwts.builder()
-            //.setId(userPrincipal.getId().toString())
+            .setId(userPrincipal.getId().toString())
             .setSubject(userPrincipal.getUsername())
             //.setClaims(claims)
             //.setIssuedAt(now)
