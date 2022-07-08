@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
 import javax.persistence.*;
 
 import org.hibernate.annotations.SQLDelete;
@@ -24,22 +23,15 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@Table(name = "M_ENROLLED_COURSE")
-@SQLDelete(sql = "UPDATE M_ENROLLED_COURSE SET is_deleted = true WHERE id=?")
+@Table(name = "M_REQUEST")
+@SQLDelete(sql = "UPDATE M_REQUEST SET is_deleted = true WHERE id=?")
 @Where(clause = "is_deleted = false")
-public class EnrolledCourse extends BaseEntityWithDeletedAt{
-    
+public class RequestForm extends BaseEntityWithDeletedAt{
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "rating")
-    private Double rating;
-
-    @Column(name = "review")
-    private String review;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -47,9 +39,16 @@ public class EnrolledCourse extends BaseEntityWithDeletedAt{
     @JsonManagedReference
     private User user;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
-    @JsonManagedReference
-    //@JsonBackReference
-    private Course course;
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @Column(name = "request_type", nullable = false)
+    private String requestType;
+
+
+
 }

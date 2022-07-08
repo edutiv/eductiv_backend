@@ -23,4 +23,6 @@ public class EnrolledCourseDto implements Serializable {
     private Long id;
     private Long userId;
     private Long courseId;
+    private Double rating;
+    private String review;
 }

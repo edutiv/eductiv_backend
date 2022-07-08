@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     @Query(value = "SELECT * FROM M_USER u WHERE username = ?", nativeQuery = true)
     User findUsername(String username);
+
+    // @Query(value = "SELECT * FROM M_USER u WHERE")
 }

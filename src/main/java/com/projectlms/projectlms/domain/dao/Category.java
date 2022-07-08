@@ -51,4 +51,8 @@ public class Category extends BaseEntityWithDeletedAt {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "category")
     @JsonBackReference
     private List<User> users;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "category")
+    private List<RequestForm> requestForms;
 }

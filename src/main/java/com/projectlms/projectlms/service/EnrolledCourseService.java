@@ -99,6 +99,25 @@ public class EnrolledCourseService {
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }
 
+    public ResponseEntity<Object> updateRatingReview(Long id, EnrolledCourseDto request) {
+        try {
+            log.info("Update rating review: {}", request);
+            Optional<EnrolledCourse> enrolledCourse = enrolledCourseRepository.findById(id);
+            if (enrolledCourse.isEmpty()) {
+                log.info("enrolled course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            enrolledCourse.get().setReview(request.getReview());
+            // Double totalRating = courseRepository.getTotalRating(enrolledCourse.)
+            enrolledCourse.get().setRating(request.getRating());
+            enrolledCourseRepository.save(enrolledCourse.get());
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourse.get(), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Get an error by executing update rating review, Error : {}",e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public ResponseEntity<Object> getEnrolledCourseByUser(String email) {
         try {
             log.info("Find user: {}", email);

@@ -1,9 +1,11 @@
 package com.projectlms.projectlms.domain.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.projectlms.projectlms.domain.dao.RoleEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +23,10 @@ public class UserDto implements Serializable {
     private Long id;
     private String firstname;
     private String lastname;
-    private String username;
+    private String email;
+    //private String username;
     private String password;
-    private String role;
+    private String profileImage;
     private Long specializationId;
+    private List<RoleEnum> roles;
 }

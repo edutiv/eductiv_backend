@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.domain.dao;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -46,6 +47,10 @@ public class Course extends BaseEntityWithDeletedAt {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    // @ManyToOne
+    // @JoinColumn(name = "mentor_id")
+    // private User user;
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description; 
 
@@ -59,11 +64,14 @@ public class Course extends BaseEntityWithDeletedAt {
     @Column(columnDefinition = "TEXT")
     private List<String> advantages;
 
+    // @Builder.Default
+    // @Column(name = "total_rating")
+    // private Integer totalRating = 0;
 
-    @Column(name = "total_video", nullable = false)
+    @Column(name = "total_video")
     private Integer totalVideo;
 
-    @Column(name = "total_times", nullable = false)
+    @Column(name = "total_times")
     private String totalTimes;
     
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
@@ -71,13 +79,13 @@ public class Course extends BaseEntityWithDeletedAt {
     private List<Section> sections;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
-    //@JsonBackReference
-    @JsonManagedReference
+    @JsonBackReference
+    //@JsonManagedReference
     private List<EnrolledCourse> enrolledCourses;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
-    @JsonManagedReference
-    private List<Review> reviews;
+    // @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
+    // @JsonManagedReference
+    // private List<Review> reviews;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "course")
     @JsonManagedReference

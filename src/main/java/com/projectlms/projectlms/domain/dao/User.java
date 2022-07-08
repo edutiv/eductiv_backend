@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.domain.dao;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 
 //import java.util.Set;
 import java.util.List;
+import java.util.Set;
+
 import javax.persistence.*;
 
 import org.hibernate.annotations.SQLDelete;
@@ -27,9 +30,9 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Table(name = "M_USER")
 @SQLDelete(sql = "UPDATE M_USER SET is_deleted = true WHERE id=?")
 @Where(clause = "is_deleted = false")
-@Table(name = "M_USER")
 public class User extends BaseEntityWithDeletedAt{
     
     private static final long serialVersionUID = 1L;
@@ -54,18 +57,37 @@ public class User extends BaseEntityWithDeletedAt{
     @JoinColumn(name = "specialization_id")
     private Category category;
 
-    // @Column(name = "specialization")
-    // private String specialization;
+    @Builder.Default
+    @Column(name = "profile_image")
+    private String profileImage = "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png";
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @JsonBackReference
     //@JsonManagedReference
     private List<EnrolledCourse> enrolledCourses;
 
+    // @JsonIgnore
+    // @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    // private List<Course> courses;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    //@JsonManagedReference
     @JsonBackReference
-    private List<Review> reviews;
+    //@JsonManagedReference
+    private List<RequestForm> requestForms;
+
+    // @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    // //@JsonManagedReference
+    // @JsonBackReference
+    // private List<Review> reviews;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    //@JsonIgnore
+    private Set<Role> roles;
 
     // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     // @JoinTable(

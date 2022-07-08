@@ -25,6 +25,7 @@ public class CourseDto implements Serializable {
     private String courseName;
     private String courseImage;
     private Long categoryId;
+    private Long mentorId;
     private String description;
     private List<String> learningObjectives;
     private List<String> advantages;

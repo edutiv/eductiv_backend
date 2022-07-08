@@ -17,7 +17,7 @@ import com.projectlms.projectlms.domain.dao.User;
 import com.projectlms.projectlms.domain.dto.CourseDto;
 import com.projectlms.projectlms.repository.CategoryRepository;
 import com.projectlms.projectlms.repository.CourseRepository;
-import com.projectlms.projectlms.repository.ReviewRepository;
+//import com.projectlms.projectlms.repository.ReviewRepository;
 import com.projectlms.projectlms.repository.SectionRepository;
 import com.projectlms.projectlms.repository.ToolRepository;
 import com.projectlms.projectlms.repository.UserRepository;
@@ -34,16 +34,16 @@ public class CourseService {
     private final CategoryRepository categoryRepository;
     private final SectionRepository sectionRepository;
     private final ToolRepository toolRepository;
-    private final ReviewRepository reviewRepository;
+    //private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, CategoryRepository categoryRepository, SectionRepository sectionRepository, ToolRepository toolRepository, ReviewRepository reviewRepository, UserRepository userRepository) {
+    public CourseService(CourseRepository courseRepository, CategoryRepository categoryRepository, SectionRepository sectionRepository, ToolRepository toolRepository, UserRepository userRepository) {
         this.courseRepository = courseRepository;
         this.categoryRepository = categoryRepository;
         this.sectionRepository = sectionRepository;
         this.toolRepository = toolRepository;
-        this.reviewRepository = reviewRepository;
+        //this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
     }
 
@@ -141,7 +141,7 @@ public class CourseService {
             courseRepository.deleteById(id);
             sectionRepository.deleteSectionByCourse(id);
             toolRepository.deleteToolByCourse(id);
-            reviewRepository.deleteReviewByCourse(id);
+            // reviewRepository.deleteReviewByCourse(id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

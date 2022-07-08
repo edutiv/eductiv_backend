@@ -13,7 +13,7 @@ import com.projectlms.projectlms.domain.dao.Material;
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Long>{
     
-    @Query(value = "SELECT * FROM M_MATERIAL m WHERE m.is_deleted = false AND m.section_id = ?", nativeQuery = true)
+    @Query(value = "SELECT * FROM M_MATERIAL ORDER BY material_type DESC WHERE m.is_deleted = false AND m.section_id = ?", nativeQuery = true)
     List<Material> searchAllMaterials(Long sectionId);
 
     @Query(value = "SELECT * FROM M_MATERIAL m WHERE m.is_deleted = false AND m.id = ? AND m.section_id = ?", nativeQuery = true)

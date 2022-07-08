@@ -45,7 +45,4 @@ public class Material extends BaseEntityWithDeletedAt{
 
     @Column(name = "material_url", nullable = false)
     private String materialUrl; 
-
-    @Column(name = "is_completed")
-    private Boolean isCompleted; 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -24,5 +25,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query(value = "SELECT * FROM M_COURSE c WHERE lower(c.course_name) like lower(concat('%', :course_name,'%'))", nativeQuery = true)
     List<Course> searchByCourseName(String course_name);
     
-    //hapus course berdasarkan category
+    @Query(value= "SELECT total_rating FROM M_COURSE c WHERE c.id = ?", nativeQuery = true)
+    Double getTotalRating(Long id);
+    
+    @Modifying
+    @Query(value = "UPDATE M_COURSE c SET c.total_rating = ?2 WHERE c.id = ?1", nativeQuery = true)
+    void updateTotalRating(Long id, Double totalRating);
 }

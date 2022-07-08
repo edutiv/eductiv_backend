@@ -1,7 +1,7 @@
-// package com.projectlms.projectlms.domain.dao;
+package com.projectlms.projectlms.domain.dao;
 
-// public enum RoleEnum {
-//     USER,
-//     ADMIN
-//     //ROLE_MENTOR,
-// }
+public enum RoleEnum {
+    ROLE_USER,
+    ROLE_ADMIN,
+    ROLE_MENTOR
+}

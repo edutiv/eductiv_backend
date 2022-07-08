@@ -17,13 +17,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MaterialDto implements Serializable{
+public class RequestFormDto implements Serializable{
     private static final long serialVersionUID =  1L;
     
     private Long id;
-    private Long sectionId;
-    private Long courseId;
-    private String materialType;
-    private String materialName;
-    private String materialUrl;
+    private Long userId;
+    private String title;
+    private Long categoryId;
+    private String requestType;
 }

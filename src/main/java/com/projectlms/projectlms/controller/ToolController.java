@@ -1,8 +1,7 @@
 package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
-//import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +16,6 @@ import com.projectlms.projectlms.service.ToolService;
 
 @RestController
 @RequestMapping(value = "/course/{cid}/tool")
-//@CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
 
 public class ToolController {
     private final ToolService toolService;
@@ -27,7 +25,7 @@ public class ToolController {
     }
 
     @PostMapping(value = "")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
     public ResponseEntity<Object> addTool(@PathVariable(value = "cid") Long courseId, @RequestBody ToolDto request) {
         request.setCourseId(courseId);
         return toolService.addTool(request);
@@ -44,13 +42,13 @@ public class ToolController {
     }
 
     @DeleteMapping(value = "/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
     public ResponseEntity<Object> deleteTool(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
         return toolService.deleteTool(courseId, id);
     }
 
     @PutMapping(value = "/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
     public ResponseEntity<Object> updateTool(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody ToolDto request) {
         request.setCourseId(courseId);
         return toolService.updateTool(id, request);

@@ -1,8 +1,7 @@
 package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
-//import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +16,6 @@ import com.projectlms.projectlms.service.SectionService;
 
 @RestController
 @RequestMapping(value = "/course/{cid}/section")
-//@CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
 
 public class SectionController {
     private final SectionService sectionService;
@@ -27,7 +25,7 @@ public class SectionController {
     }
 
     @PostMapping(value = "")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
     public ResponseEntity<Object> addSection(@PathVariable(value = "cid") Long courseId, @RequestBody SectionDto request) {
         request.setCourseId(courseId);
         return sectionService.addSection(request);
@@ -44,13 +42,13 @@ public class SectionController {
     }
 
     @DeleteMapping(value = "/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
     public ResponseEntity<Object> deleteSection(@PathVariable(value = "cid") Long courseId, @PathVariable(value = "id") Long id) {
         return sectionService.deleteSection(courseId, id);
     }
 
     @PutMapping(value = "/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
     public ResponseEntity<Object> updateSection(@PathVariable (value = "cid") Long courseId, @PathVariable(value = "id") Long id, @RequestBody SectionDto request) {
         request.setCourseId(courseId);
         return sectionService.updateSection(id, request);
