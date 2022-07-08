@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 //import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ public class UserController {
     }
 
     @PostMapping(value = "")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> addUser(@RequestBody UserDto request) {
         return userService.addUser(request);
     }
