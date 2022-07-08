@@ -53,10 +53,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.cors().and().csrf().disable()
             .authorizeRequests()
-            .antMatchers("/user/**", "/h2-console/**").permitAll()            
-            .antMatchers("/**").hasAnyRole("ADMIN", "USER", "MENTOR")
+            .antMatchers("/user/**", "/h2-console/**").permitAll()  
             .antMatchers(HttpMethod.GET, "/category/**").permitAll()
-            .antMatchers(HttpMethod.GET, "/course/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/course/**").permitAll()          
+            .antMatchers("/**").hasAnyRole("ADMIN", "USER", "MENTOR")
             .anyRequest().authenticated();
 
         http.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
