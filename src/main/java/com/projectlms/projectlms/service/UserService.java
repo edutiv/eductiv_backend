@@ -118,19 +118,19 @@ public class UserService {
             Optional<Category> category = categoryRepository.searchCategoryById(request.getSpecializationId());
             if(category.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
-            user.get().setFirstname(request.getFirstname());
-            user.get().setLastname(request.getLastname());
-            user.get().setUsername(request.getEmail());
-            user.get().setPassword(passwordEncoder.encode(request.getPassword()));
-            user.get().setProfileImage(request.getProfileImage());
+            // user.get().setFirstname(request.getFirstname());
+            // user.get().setLastname(request.getLastname());
+            // user.get().setUsername(request.getEmail());
+            // user.get().setPassword(passwordEncoder.encode(request.getPassword()));
+            //user.get().setProfileImage(request.getProfileImage());
             user.get().setCategory(category.get());
-            Set<Role> roles = new HashSet<>();
-            request.getRoles().forEach(inputRole -> {
-                Role role = roleRepository.findByName(inputRole)
-                    .orElseThrow(() -> new RuntimeException("ROLE NOT FOUND"));
-                roles.add(role);
-            });
-            user.get().setRoles(roles);
+            // Set<Role> roles = new HashSet<>();
+            // request.getRoles().forEach(inputRole -> {
+            //     Role role = roleRepository.findByName(inputRole)
+            //         .orElseThrow(() -> new RuntimeException("ROLE NOT FOUND"));
+            //     roles.add(role);
+            // });
+            // user.get().setRoles(roles);
             userRepository.save(user.get());
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, user.get(), HttpStatus.OK);
         } catch (Exception e) {
