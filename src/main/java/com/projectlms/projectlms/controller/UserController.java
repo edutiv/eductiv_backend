@@ -1,5 +1,7 @@
 package com.projectlms.projectlms.controller;
 
+import java.security.Principal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 //import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,29 +27,51 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> addUser(@RequestBody UserDto request) {
-        return userService.addUser(request);
-    }
+    // @PostMapping(value = "")
+    // @PreAuthorize("hasRole('ADMIN')")
+    // public ResponseEntity<Object> addUser(@RequestBody UserDto request) {
+    //     return userService.addUser(request);
+    // }
 
-    @GetMapping(value = "")
+    @GetMapping(value = "/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getAllUser() {
         return userService.getAllUser();
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getUserDetail(@PathVariable(value = "id") Long id) {
         return userService.getUserDetail(id);
     }
 
+    @GetMapping(value = "")
+    public ResponseEntity<Object> getUserDetail(Principal principal) {
+        return userService.getUserDetail(principal.getName());
+    }
+
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") Long id) {
         return userService.deleteUser(id);
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable(value = "id") Long id, @RequestBody UserDto request) {
-        return userService.updateUser(request, id);
+    @PutMapping(value = "/edit-user")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Object> updateUserbyUser(Principal principal, @RequestBody UserDto request) {
+        request.setEmail(principal.getName());
+        return userService.updateUserbyUser(request);
     }
+
+    @PutMapping(value = "/edit-admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> updateUserbyAdmin(@PathVariable(value = "id") Long id, @RequestBody UserDto request) {
+        return userService.updateUserbyAdmin(request, id);
+    }
+
+    @PutMapping(value = "/change-password")
+    public ResponseEntity<Object> changePassword(Principal principal, @RequestBody UserDto request) {
+        request.setEmail(principal.getName());
+        return userService.changePassword(request);
+    }   
 }
