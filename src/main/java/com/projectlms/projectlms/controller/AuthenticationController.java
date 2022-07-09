@@ -22,7 +22,7 @@ public class AuthenticationController {
     private final AuthService authService;
 
     @PostMapping(value = "/user/register")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> register(@RequestBody UserDto req) {
         try {
             authService.register(req);
