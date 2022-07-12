@@ -2,7 +2,6 @@ package com.projectlms.projectlms.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +14,20 @@ import com.projectlms.projectlms.domain.dto.CategoryDto;
 import com.projectlms.projectlms.repository.CategoryRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    // @Autowired
+    // public CategoryService(CategoryRepository categoryRepository) {
+    //     this.categoryRepository = categoryRepository;
+    // }
 
     public ResponseEntity<Object> addCategory(CategoryDto request) {
         log.info("Save new category: {}", request);

@@ -23,10 +23,12 @@ import com.projectlms.projectlms.repository.ToolRepository;
 import com.projectlms.projectlms.repository.UserRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class CourseService {
 
@@ -37,15 +39,15 @@ public class CourseService {
     //private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
-    @Autowired
-    public CourseService(CourseRepository courseRepository, CategoryRepository categoryRepository, SectionRepository sectionRepository, ToolRepository toolRepository, UserRepository userRepository) {
-        this.courseRepository = courseRepository;
-        this.categoryRepository = categoryRepository;
-        this.sectionRepository = sectionRepository;
-        this.toolRepository = toolRepository;
-        //this.reviewRepository = reviewRepository;
-        this.userRepository = userRepository;
-    }
+    // @Autowired
+    // public CourseService(CourseRepository courseRepository, CategoryRepository categoryRepository, SectionRepository sectionRepository, ToolRepository toolRepository, UserRepository userRepository) {
+    //     this.courseRepository = courseRepository;
+    //     this.categoryRepository = categoryRepository;
+    //     this.sectionRepository = sectionRepository;
+    //     this.toolRepository = toolRepository;
+    //     //this.reviewRepository = reviewRepository;
+    //     this.userRepository = userRepository;
+    // }
 
     public ResponseEntity<Object> addCourse(CourseDto request) {
         try {
@@ -141,7 +143,6 @@ public class CourseService {
             courseRepository.deleteById(id);
             sectionRepository.deleteSectionByCourse(id);
             toolRepository.deleteToolByCourse(id);
-            // reviewRepository.deleteReviewByCourse(id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

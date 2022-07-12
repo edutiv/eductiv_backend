@@ -14,15 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projectlms.projectlms.domain.dto.CategoryDto;
 import com.projectlms.projectlms.service.CategoryService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/category")
 public class CategoryController {
     
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @PostMapping(value = "")
     @PreAuthorize("hasRole('ADMIN')")

@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
-//import java.util.Set;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -26,7 +26,7 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -48,7 +48,13 @@ public class User extends BaseEntityWithDeletedAt{
     private String lastname;
 
     @Column(name = "username", nullable =  false)
+    @Email(message = "Email should be valid")
+    @Pattern(regexp=".+@.+\\..+", message="Please provide a valid email address")
     private String username;
+
+    // @Column(name = "username", nullable = false)
+    // @Email(message = "EMAIL IS NOT VALID")
+    // private String username;
 
     @Column(name = "password", nullable =  false)
     private String password;

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Category;
 import com.projectlms.projectlms.domain.dao.Role;
+import com.projectlms.projectlms.domain.dao.RoleEnum;
 import com.projectlms.projectlms.domain.dao.User;
 import com.projectlms.projectlms.domain.dto.UserDto;
 import com.projectlms.projectlms.repository.CategoryRepository;
@@ -24,24 +25,18 @@ import com.projectlms.projectlms.repository.RoleRepository;
 import com.projectlms.projectlms.repository.UserRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository,CategoryRepository categoryRepository, PasswordEncoder passwordEncoder,RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.categoryRepository = categoryRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
-    }
+    private Boolean check;
 
     // public ResponseEntity<Object> addUser(UserDto request) {
     //     log.info("Save new user: {}", request);
@@ -172,6 +167,21 @@ public class UserService {
 
     public ResponseEntity<Object> deleteUser(Long id) {
         try {
+            log.info("Check user is not admin");
+            check=false;
+            Optional<User> user = userRepository.findById(id);
+            if (user.isEmpty()) {
+                log.info("user not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            user.get().getRoles().forEach(role -> {
+                if(role.getName().equals(RoleEnum.ROLE_ADMIN)) check = true;
+            });
+            if(check == true) {
+                log.info("can't delete admin");
+                return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             log.info("Executing delete user by id: {}", id);
             userRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {

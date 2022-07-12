@@ -1,20 +1,14 @@
 package com.projectlms.projectlms.service;
 
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Category;
 import com.projectlms.projectlms.domain.dao.Role;
 import com.projectlms.projectlms.domain.dao.RoleEnum;
@@ -25,8 +19,6 @@ import com.projectlms.projectlms.repository.RoleRepository;
 import com.projectlms.projectlms.repository.UserRepository;
 import com.projectlms.projectlms.response.TokenResponse;
 import com.projectlms.projectlms.security.JwtProvider;
-import com.projectlms.projectlms.util.ResponseUtil;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

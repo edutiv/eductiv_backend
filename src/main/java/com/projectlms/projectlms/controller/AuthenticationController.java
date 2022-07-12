@@ -33,12 +33,6 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/user/login")
-    // public ResponseEntity<TokenResponse> authenticateUser(@RequestBody LoginDto loginRequest) {
-    //     log.info("Incoming password login request.");
-    //     TokenResponse jwtResponse = authenticationService.generateToken(loginRequest);
-    //     log.info("Successfully authenticated.");
-    //     return ResponseEntity.ok(jwtResponse);
-    // }
     public ResponseEntity<?> generateToken(@RequestBody UserDto req) {
         TokenResponse token = authService.generateToken(req);
 
@@ -47,9 +41,4 @@ public class AuthenticationController {
         
         return ResponseEntity.ok().headers(responseHeaders).body(token);
     }
-
-    // @PutMapping("/users")
-    // public ResponseEntity<Object> update(@RequestBody UserDto userDto) {
-    //     return authService.updateUser(userDto);
-    // }
 }

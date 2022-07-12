@@ -16,17 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projectlms.projectlms.domain.dto.EnrolledCourseDto;
 import com.projectlms.projectlms.service.EnrolledCourseService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/enrolled")
 public class EnrolledCourseController {
     private final EnrolledCourseService requestService;
 
-    public EnrolledCourseController(EnrolledCourseService requestService) {
-        this.requestService = requestService;
-    }
-
     @PostMapping(value = "")
-    public ResponseEntity<Object> addEnrolledCourse(@RequestBody EnrolledCourseDto request) {
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Object> addEnrolledCourse(Principal principal, @RequestBody EnrolledCourseDto request) {
+        request.setEmail(principal.getName());
         return requestService.addEnrolledCourse(request);
     }
 
@@ -44,8 +45,9 @@ public class EnrolledCourseController {
 
     @PutMapping(value = "/{id}")
     //@PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> updateRatingReview(@PathVariable(value = "id") Long id, @RequestBody EnrolledCourseDto request) {
-        return requestService.updateRatingReview(id, request);
+    public ResponseEntity<Object> updateRatingReview(Principal principal, @PathVariable(value = "id") Long id, @RequestBody EnrolledCourseDto request) {
+        request.setId(id);
+        return requestService.updateRatingReview(principal.getName(), request);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -62,5 +64,12 @@ public class EnrolledCourseController {
     @GetMapping(value = "/courses/{id}")
     public ResponseEntity<Object> getEnrolledCourseByCourse(@PathVariable Long id) {
         return requestService.getEnrolledCourseByCourse(id);
+    }
+
+    @PutMapping(value = "/progress/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Object> updateProgress(Principal principal, @PathVariable Long id, @RequestBody EnrolledCourseDto request) {
+        request.setEmail(principal.getName());
+        return requestService.updateProgress(id, request);
     }
 }

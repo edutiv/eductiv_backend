@@ -12,30 +12,40 @@ import org.springframework.stereotype.Service;
 
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Course;
+import com.projectlms.projectlms.domain.dao.EnrolledCourse;
 import com.projectlms.projectlms.domain.dao.Material;
+import com.projectlms.projectlms.domain.dao.Report;
 import com.projectlms.projectlms.domain.dao.Section;
 import com.projectlms.projectlms.domain.dto.MaterialDto;
 import com.projectlms.projectlms.repository.CourseRepository;
+import com.projectlms.projectlms.repository.EnrolledCourseRepository;
 import com.projectlms.projectlms.repository.MaterialRepository;
+import com.projectlms.projectlms.repository.ReportRepository;
 import com.projectlms.projectlms.repository.SectionRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class MaterialService {
     private final MaterialRepository materialRepository;
     private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
+    private final EnrolledCourseRepository enrolledCourseRepository;
+    private final ReportRepository reportRepository;
 
-    @Autowired
-    public MaterialService(MaterialRepository materialRepository, SectionRepository sectionRepository, CourseRepository courseRepository) {
-        this.materialRepository = materialRepository;
-        this.sectionRepository = sectionRepository;
-        this.courseRepository = courseRepository;
-    }
+    // @Autowired
+    // public MaterialService(MaterialRepository materialRepository, SectionRepository sectionRepository, CourseRepository courseRepository, EnrolledCourseRepository enrolledCourseRepository, ReportRepository reportRepository) {
+    //     this.materialRepository = materialRepository;
+    //     this.sectionRepository = sectionRepository;
+    //     this.courseRepository = courseRepository;
+    //     this.enrolledCourseRepository = enrolledCourseRepository;
+    //     this.reportRepository = reportRepository;
+    // }
 
     public ResponseEntity<Object> addMaterial(MaterialDto request) {
         try {
@@ -59,7 +69,26 @@ public class MaterialService {
                 //.isCompleted(request.getIsComplete())
                 .build();
 
-            material = materialRepository.save(material);
+            materialRepository.save(material);
+
+            log.info("Update material report and progress");
+            List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByCourse(request.getCourseId());
+
+            Integer totalMaterials = materialRepository.countMaterials(request.getCourseId()).size();
+
+            enrolledCourses.forEach(enrolledCourse -> {
+                log.info("Add new report");
+                Report report = new Report();
+                report.setEnrolledCourse(enrolledCourse);
+                report.setMaterial(material);
+                reportRepository.save(report);
+            
+            log.info("Update progress enrolled course");
+            Integer completedCourse = reportRepository.findByCompleted(enrolledCourse.getId()).size();
+            Integer progress = (completedCourse*100)/totalMaterials;
+            enrolledCourse.setProgress(progress);
+            enrolledCourseRepository.save(enrolledCourse);
+            });
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, material, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Get an error by executing create new material, Error : {}",e.getMessage());
@@ -181,6 +210,19 @@ public class MaterialService {
             }
             log.info("Executing delete material by id: {}", id);
             materialRepository.deleteById(id);
+
+            log.info("Update material report and progress");
+            List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByCourse(courseId);
+
+            Integer totalMaterials = materialRepository.countMaterials(courseId).size();
+
+            enrolledCourses.forEach(enrolledCourse -> {
+                log.info("Update progress enrolled course");
+                Integer completedCourse = reportRepository.findByCompleted(enrolledCourse.getId()).size();
+                Integer progress = (completedCourse*100)/totalMaterials;
+                enrolledCourse.setProgress(progress);
+                enrolledCourseRepository.save(enrolledCourse);
+            });
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

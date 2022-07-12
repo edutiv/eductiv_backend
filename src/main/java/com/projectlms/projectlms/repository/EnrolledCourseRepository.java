@@ -15,4 +15,11 @@ public interface EnrolledCourseRepository extends JpaRepository<EnrolledCourse, 
 
     @Query(value = "SELECT ec.* FROM M_ENROLLED_COURSE ec INNER JOIN M_COURSE c ON ec.course_id=c.id WHERE ec.is_deleted = false AND ec.course_id = ?", nativeQuery = true)
     List<EnrolledCourse> getEnrolledCourseByCourse(Long id);
+
+    @Query(value = "SELECT COUNT(ec.rating) FROM M_ENROLLED_COURSE ec WHERE ec.course_id = ? AND ec.is_deleted = false", nativeQuery = true)
+    Integer countRatingByCourse(Long id);
+
+    @Query(value = "SELECT SUM(ec.rating) FROM M_ENROLLED_COURSE ec WHERE ec.course_id = ? AND ec.is_deleted = false", nativeQuery = true)
+    Double sumRatingByCourse(Long id);
+
 }

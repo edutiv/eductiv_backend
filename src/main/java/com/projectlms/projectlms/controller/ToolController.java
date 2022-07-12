@@ -14,15 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projectlms.projectlms.domain.dto.ToolDto;
 import com.projectlms.projectlms.service.ToolService;
 
-@RestController
-@RequestMapping(value = "/course/{cid}/tool")
+import lombok.RequiredArgsConstructor;
 
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(value = "/course/{cid}/tool")
 public class ToolController {
     private final ToolService toolService;
-
-    public ToolController(ToolService toolService) {
-        this.toolService = toolService;
-    }
 
     @PostMapping(value = "")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")

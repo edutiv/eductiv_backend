@@ -14,15 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projectlms.projectlms.domain.dto.SectionDto;
 import com.projectlms.projectlms.service.SectionService;
 
-@RestController
-@RequestMapping(value = "/course/{cid}/section")
+import lombok.RequiredArgsConstructor;
 
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(value = "/course/{cid}/section")
 public class SectionController {
     private final SectionService sectionService;
-
-    public SectionController(SectionService sectionService) {
-        this.sectionService = sectionService;
-    }
 
     @PostMapping(value = "")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")

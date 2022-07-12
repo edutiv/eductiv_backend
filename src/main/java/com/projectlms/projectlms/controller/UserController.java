@@ -17,15 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projectlms.projectlms.domain.dto.UserDto;
 import com.projectlms.projectlms.service.UserService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/user")
-//@CrossOrigin(origins = "https://edutiv-springboot.herokuapp.com")
 public class UserController {
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     // @PostMapping(value = "")
     // @PreAuthorize("hasRole('ADMIN')")

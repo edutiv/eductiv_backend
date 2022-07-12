@@ -1,12 +1,17 @@
 package com.projectlms.projectlms.domain.dao;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -36,7 +41,12 @@ public class EnrolledCourse extends BaseEntityWithDeletedAt{
     private Long id;
 
     @Column(name = "rating")
+    @Min(value = 0) @Max(value = 5)
     private Double rating;
+
+    @Column(name = "progress")
+    @Builder.Default
+    private Integer progress = 0;
 
     @Column(name = "review")
     private String review;
@@ -52,4 +62,8 @@ public class EnrolledCourse extends BaseEntityWithDeletedAt{
     @JsonManagedReference
     //@JsonBackReference
     private Course course;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "enrolledCourse")
+    @JsonManagedReference
+    private List<Report> reports;
 }

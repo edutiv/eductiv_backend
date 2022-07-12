@@ -1,55 +1,51 @@
 package com.projectlms.projectlms.domain.dao;
 
+import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-
-import java.util.List;
-
 import javax.persistence.*;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@Table(name = "M_MATERIAL")
-@SQLDelete(sql = "UPDATE M_MATERIAL SET is_deleted = true WHERE id=?")
+@Table(name = "M_REPORT")
+@SQLDelete(sql = "UPDATE M_REPORT SET is_deleted = true WHERE id=?")
 @Where(clause = "is_deleted = false")
-public class Material extends BaseEntityWithDeletedAt{
+public class Report extends BaseEntityWithDeletedAt{
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Builder.Default
+    private Boolean isCompleted = false;
+
     @ManyToOne
-    @JoinColumn(name = "section_id", nullable = false)
+    @JoinColumn(name = "enrolled_course_id")
     @JsonBackReference
-    private Section section;
+    private EnrolledCourse enrolledCourse;
 
-    @Column(name = "material_type", nullable = false)
-    private String materialType;
+    @ManyToOne
+    @JoinColumn(name = "material_id")
+    @JsonManagedReference
+    private Material material;
     
-    @Column(name = "material_name", nullable = false)
-    private String materialName;
-
-    @Column(name = "material_url", nullable = false)
-    private String materialUrl; 
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "material")
-    @JsonBackReference
-    private List<Report> reports;
 }

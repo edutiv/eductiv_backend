@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import javax.persistence.*;
@@ -22,7 +21,7 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -64,10 +63,9 @@ public class Course extends BaseEntityWithDeletedAt {
     @Column(columnDefinition = "TEXT")
     private List<String> advantages;
 
-    // @Builder.Default
-    // @Column(name = "total_rating")
-    // private Integer totalRating = 0;
-
+    @Column(name = "total_rating")
+    @Builder.Default
+    private Double totalRating = 0.0;
     @Column(name = "total_video")
     private Integer totalVideo;
 

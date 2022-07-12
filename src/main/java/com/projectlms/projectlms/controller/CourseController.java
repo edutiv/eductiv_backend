@@ -16,15 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projectlms.projectlms.domain.dto.CourseDto;
 import com.projectlms.projectlms.service.CourseService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/course")
 public class CourseController {
     
     private final CourseService courseService;
-
-    public CourseController(CourseService courseService) {
-        this.courseService = courseService;
-    }
 
     @PostMapping(value = "")
     @PreAuthorize("hasRole('ADMIN')")
@@ -50,7 +49,6 @@ public class CourseController {
 
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    //@PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
     public ResponseEntity<Object> updateCourse(@PathVariable(value = "id") Long id, @RequestBody CourseDto request) {
         return courseService.updateCourse(id, request);
     }

@@ -12,15 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projectlms.projectlms.domain.dto.RequestFormDto;
 import com.projectlms.projectlms.service.RequestService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/request")
 public class RequestController {
 
     private final RequestService requestService;
-
-    public RequestController(RequestService requestService) {
-        this.requestService = requestService;
-    }
 
     @PostMapping(value = "")
     @PreAuthorize("hasRole('USER')")

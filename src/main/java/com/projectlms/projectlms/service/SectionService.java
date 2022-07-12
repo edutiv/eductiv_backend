@@ -12,29 +12,38 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.projectlms.projectlms.constant.AppConstant;
 import com.projectlms.projectlms.domain.dao.Course;
+import com.projectlms.projectlms.domain.dao.EnrolledCourse;
 import com.projectlms.projectlms.domain.dao.Section;
 import com.projectlms.projectlms.domain.dto.SectionDto;
 import com.projectlms.projectlms.repository.CourseRepository;
+import com.projectlms.projectlms.repository.EnrolledCourseRepository;
 import com.projectlms.projectlms.repository.MaterialRepository;
+import com.projectlms.projectlms.repository.ReportRepository;
 import com.projectlms.projectlms.repository.SectionRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class SectionService {
     private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
     private final MaterialRepository materialRepository;
+    private final ReportRepository reportRepository;
+    private final EnrolledCourseRepository enrolledCourseRepository;
 
-    @Autowired
-    public SectionService(SectionRepository sectionRepository, CourseRepository courseRepository, MaterialRepository materialRepository) {
-        this.sectionRepository = sectionRepository;
-        this.courseRepository = courseRepository;
-        this.materialRepository = materialRepository;
-    }
+    // @Autowired
+    // public SectionService(SectionRepository sectionRepository, CourseRepository courseRepository, MaterialRepository materialRepository, ReportRepository reportRepository, EnrolledCourseRepository enrolledCourseRepository) {
+    //     this.sectionRepository = sectionRepository;
+    //     this.courseRepository = courseRepository;
+    //     this.materialRepository = materialRepository;
+    //     this.reportRepository = reportRepository;
+    //     this.enrolledCourseRepository = enrolledCourseRepository;
+    // }
 
     public ResponseEntity<Object> addSection(SectionDto request) {
         try {
@@ -145,6 +154,28 @@ public class SectionService {
             log.info("Executing delete section by id: {}", id);
             sectionRepository.deleteById(id);
             materialRepository.deleteMaterialBySection(id);
+
+            log.info("update material progress");
+            List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByCourse(courseId);
+
+            Integer totalMaterials = materialRepository.countMaterials(courseId).size();
+
+            if(totalMaterials != 0) {
+                enrolledCourses.forEach(enrolledCourse -> {
+                    log.info("Update progress enrolled course {}", totalMaterials);
+                    Integer completedCourse = reportRepository.findByCompleted(enrolledCourse.getId()).size();
+                    Integer progress = (completedCourse*100)/totalMaterials;
+                    enrolledCourse.setProgress(progress);
+                    enrolledCourseRepository.save(enrolledCourse);
+                });
+            } else {
+                enrolledCourses.forEach(enrolledCourse -> {
+                    log.info("Update progress enrolled course total material 0");
+                    enrolledCourse.setProgress(0);
+                    enrolledCourseRepository.save(enrolledCourse);
+                });
+            }
+
         } catch (EmptyResultDataAccessException e) {
             log.error("Data not found. Error: {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);

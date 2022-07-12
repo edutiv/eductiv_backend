@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByUsername(String username);
     //Boolean existsByUsername(String username);
 
-    @Query(value = "SELECT * FROM M_USER u WHERE username = ?", nativeQuery = true)
+    @Query(value = "SELECT * FROM M_USER u WHERE username = ? AND u.is_deleted = false", nativeQuery = true)
     User findUsername(String username);
 
     // @Query(value = "SELECT * FROM M_USER u WHERE")

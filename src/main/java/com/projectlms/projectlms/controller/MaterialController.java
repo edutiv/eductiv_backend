@@ -14,15 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.projectlms.projectlms.domain.dto.MaterialDto;
 import com.projectlms.projectlms.service.MaterialService;
 
-@RestController
-@RequestMapping(value = "/course/{cid}/section/{sid}/material")
+import lombok.RequiredArgsConstructor;
 
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(value = "/course/{cid}/section/{sid}/material")
 public class MaterialController {
     private final MaterialService materialService;
-
-    public MaterialController(MaterialService materialService) {
-        this.materialService = materialService;
-    }
 
     @PostMapping(value = "")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")

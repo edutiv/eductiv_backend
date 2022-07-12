@@ -19,22 +19,25 @@ import com.projectlms.projectlms.repository.UserRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
 import com.projectlms.projectlms.constant.AppConstant;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    @Autowired
-    public RequestService(RequestRepository requestRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
-        this.requestRepository = requestRepository;
-        this.userRepository = userRepository;
-        this.categoryRepository = categoryRepository;
-    }
+    // @Autowired
+    // public RequestService(RequestRepository requestRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
+    //     this.requestRepository = requestRepository;
+    //     this.userRepository = userRepository;
+    //     this.categoryRepository = categoryRepository;
+    // }
 
     public ResponseEntity<Object> addRequest(RequestFormDto req) {
         try{
@@ -50,7 +53,7 @@ public class RequestService {
 
             RequestForm request = RequestForm.builder()
                 .user(user.get())
-                .title(req.getRequestType())
+                .title(req.getTitle())
                 .category(category.get())
                 .requestType(req.getRequestType())
                 .build();

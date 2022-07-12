@@ -18,20 +18,16 @@ import com.projectlms.projectlms.repository.CourseRepository;
 import com.projectlms.projectlms.repository.ToolRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class ToolService {
     private final ToolRepository toolRepository;
     private final CourseRepository courseRepository;
-
-    @Autowired
-    public ToolService(ToolRepository toolRepository, CourseRepository courseRepository) {
-        this.toolRepository = toolRepository;
-        this.courseRepository = courseRepository;
-    }
 
     public ResponseEntity<Object> addTool(ToolDto request) {
         try {
