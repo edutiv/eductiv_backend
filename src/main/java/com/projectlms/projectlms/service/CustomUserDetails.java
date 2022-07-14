@@ -16,18 +16,6 @@ public class CustomUserDetails implements UserDetails {
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
-    // private String firstname;
-    // private String lastname;
-    //private String specialization;
-    // public String getFirstname() {
-    //     return firstname;
-    // }
-    // public String getLastname() {
-    //     return lastname;
-    // }
-    // public String getSpecialization() {
-    //     return specialization;
-    // }
     
     public Long getId() {
         return id;

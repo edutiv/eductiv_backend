@@ -24,11 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    // @Autowired
-    // public CategoryService(CategoryRepository categoryRepository) {
-    //     this.categoryRepository = categoryRepository;
-    // }
-
     public ResponseEntity<Object> addCategory(CategoryDto request) {
         log.info("Save new category: {}", request);
         Category category = Category.builder()
@@ -58,7 +53,7 @@ public class CategoryService {
     public ResponseEntity<Object> getCategoryDetail (Long id) {
         try {
             log.info("Find category detail by category id: {}", id);
-            Optional<Category> categoryDetail = categoryRepository.searchCategoryById(id);
+            Optional<Category> categoryDetail = categoryRepository.findById(id);
             if (categoryDetail.isEmpty()) {
                 log.info("category not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -73,7 +68,7 @@ public class CategoryService {
     public ResponseEntity<Object> updateCategory(CategoryDto request, Long id) {
         try {
             log.info("Update category: {}", request);
-            Optional<Category> category = categoryRepository.searchCategoryById(id);
+            Optional<Category> category = categoryRepository.findById(id);
             if (category.isEmpty()) {
                 log.info("category not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
@@ -92,10 +87,15 @@ public class CategoryService {
     public ResponseEntity<Object> deleteCategory(Long id) {
         try {
             log.info("Executing delete category by id: {}", id);
+            Optional<Category> category = categoryRepository.findById(id);
+            if (category.isEmpty()) {
+                log.info("faq not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             categoryRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Data not found. Error: {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Get an error by delete faq. Error: {}", e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }

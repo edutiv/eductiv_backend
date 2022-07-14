@@ -2,6 +2,7 @@ package com.projectlms.projectlms.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,12 @@ public class RequestController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> getRequestDetail(@PathVariable(value = "id") Long id) {
         return requestService.getRequestDetail(id);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> deleteRequest(@PathVariable(value = "id") Long id) {
+        return requestService.deleteRequest(id);
     }
     
 }

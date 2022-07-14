@@ -28,27 +28,3 @@ public class CustomUserDetailsService implements UserDetailsService {
         return CustomUserDetails.build(user);
     }
 }
-
-
-
-
-
-//         Optional<User> user = userRepository.findByUsername(username);
-
-//         if (user.isEmpty()) {
-//             throw new UsernameNotFoundException("User " + username + " not found");
-//         }
-// //                .orElseThrow(() -> new UsernameNotFoundException("User Not Found for the username: " + username));
-
-//         return CustomUserDetails.build(user.get());
-
-        // User user = userRepository.findByUsername(username);
-
-        // if(user != null) {
-        //     log.info("User '{}' found", username);
-        //     return user;
-        // } else {
-        //     log.error("User '{}' not found", username);
-        //     throw new UsernameNotFoundException("Username not found");
-        // }
-    

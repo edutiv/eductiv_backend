@@ -95,18 +95,16 @@ public class EnrolledCourseService {
         }
     }
 
-    public ResponseEntity<Object> getEnrolledCourseDetail(Long id) {
+    public EnrolledCourse getEnrolledCourseDetail(Long id) {
         try {
             log.info("Find request detail by enrolled course id: {}", id);
-            Optional<EnrolledCourse> enrolledCourseDetail = enrolledCourseRepository.findById(id);
-            if (enrolledCourseDetail.isEmpty()) {
-                log.info("enrolled course not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourseDetail.get(), HttpStatus.OK);
+            EnrolledCourse enrolledCourseDetail = enrolledCourseRepository.findById(id)
+                .orElseThrow(() -> new Exception("Enrolled course " + id + " not found"));
+            
+            return enrolledCourseDetail;
         } catch (Exception e) {
             log.error("Get an error by executing get enrolled course by id, Error : {}",e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 

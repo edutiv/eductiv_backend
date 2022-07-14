@@ -23,11 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class FaqService {
     private final FaqRepository faqRepository;
 
-    // @Autowired
-    // public FaqService(FaqRepository faqRepository) {
-    //     this.faqRepository = faqRepository;
-    // }
-
     public ResponseEntity<Object> addFaq(FaqDto request) {
         log.info("Save new faq: {}", request);
         Faq faq = Faq.builder()
@@ -70,10 +65,15 @@ public class FaqService {
     public ResponseEntity<Object> deleteFaq(Long id) {
         try {
             log.info("Executing delete faq by id: {}", id);
+            Optional<Faq> faqDetail = faqRepository.findById(id);
+            if (faqDetail.isEmpty()) {
+                log.info("faq not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             faqRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Data not found. Error: {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Get an error by delete faq. Error: {}", e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }
