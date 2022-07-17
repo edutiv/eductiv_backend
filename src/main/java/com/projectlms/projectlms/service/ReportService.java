@@ -21,13 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReportService {
     private final ReportRepository reportRepository;
     private final SectionRepository sectionRepository;
-
-    // @Autowired
-    // public ReportService(ReportRepository reportRepository, SectionRepository sectionRepository) {
-    //     this.reportRepository = reportRepository;
-    //     this.sectionRepository = sectionRepository;
-    // }
-
+    
     public void addReport(EnrolledCourse request) {
         try {
             log.info("Add report: {}", request.getCourse().getId());

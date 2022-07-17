@@ -90,7 +90,7 @@ public class EnrolledCourseController {
         ByteArrayInputStream bis = ReportData.courseReportData(enrolledCourse);
 
         var headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename=course-report.pdf");
+        headers.add("Content-Disposition", "inline; filename=edutiv-data-report.pdf");
     
         return ResponseEntity
             .ok()

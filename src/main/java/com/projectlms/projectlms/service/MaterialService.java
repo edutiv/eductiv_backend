@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,15 +36,6 @@ public class MaterialService {
     private final CourseRepository courseRepository;
     private final EnrolledCourseRepository enrolledCourseRepository;
     private final ReportRepository reportRepository;
-
-    // @Autowired
-    // public MaterialService(MaterialRepository materialRepository, SectionRepository sectionRepository, CourseRepository courseRepository, EnrolledCourseRepository enrolledCourseRepository, ReportRepository reportRepository) {
-    //     this.materialRepository = materialRepository;
-    //     this.sectionRepository = sectionRepository;
-    //     this.courseRepository = courseRepository;
-    //     this.enrolledCourseRepository = enrolledCourseRepository;
-    //     this.reportRepository = reportRepository;
-    // }
 
     public ResponseEntity<Object> addMaterial(MaterialDto request) {
         try {

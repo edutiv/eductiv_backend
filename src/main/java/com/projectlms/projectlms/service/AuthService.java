@@ -91,56 +91,10 @@ public class AuthService {
             log.info("Token created");
             
             return tokenResponse;
-            //return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, tokenResponse.getToken(), HttpStatus.CREATED);
         } catch(Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
         }
     }
-
-    // public ResponseEntity<Object> updateUser(UserDto userDto) {
-    //     UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    //     String email = userDetails.getUsername();
-    //     Optional<User> user = userRepository.findByUsername(email);
-    //     //User user = new User();
-
-    //     if (!Objects.equals(userDto.getFirstname(), "") && userDto.getFirstname() != null) {
-    //         user.get().setFirstname(userDto.getFirstname());
-    //     }
-        
-    //     if (!Objects.equals(userDto.getLastname(), "") && userDto.getLastname() != null) {
-    //         user.get().setLastname(userDto.getLastname());
-    //     }
-
-    //     if (!Objects.equals(userDto.getEmail(), "") && userDto.getEmail() != null) {
-    //         // if (Boolean.TRUE.equals(userRepository.existsByUsername(userDto.getUsername()))) {
-    //         //     return Response.build(Response.exist("user", "username", userDto.getUsername()), null, null, HttpStatus.BAD_REQUEST);
-    //         // }
-    //         user.get().setUsername(userDto.getEmail());
-    //     }
-
-    //     if (!Objects.equals(userDto.getPassword(), "") && userDto.getPassword() != null) {
-    //         user.get().setPassword(passwordEncoder.encode(userDto.getPassword()));
-    //     }
-
-    //     Category category = categoryRepository.findById(userDto.getSpecializationId())
-    //             .orElseThrow(() -> new RuntimeException("Specialization not found"));
-    //     user.get().setCategory(category);
-
-    //     Set<Role> roles = new HashSet<>();
-    //         userDto.getRoles().forEach(inputRole -> {
-    //             Role role = roleRepository.findByName(inputRole)
-    //                 .orElseThrow(() -> new RuntimeException("ROLE NOT FOUND"));
-    //             roles.add(role);
-    //         });
-    //     user.get().setRoles(roles);
-
-    //     userRepository.save(user.get());
-
-    //     userDto.setPassword("*".repeat(userDto.getPassword().length()));
-    //     log.info("User {} saved", userDto.getEmail());
-        
-    //     return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, user.get(), HttpStatus.OK);
-    // }
 
 }

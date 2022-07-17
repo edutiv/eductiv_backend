@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.domain.dao;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.*;
 
 @Entity
+@Builder
 @Table(name = "M_ROLES")
 @Data
 @NoArgsConstructor

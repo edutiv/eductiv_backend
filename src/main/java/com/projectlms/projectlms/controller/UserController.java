@@ -64,7 +64,7 @@ public class UserController {
     @PutMapping(value = "/edit-admin/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateUserbyAdmin(@PathVariable(value = "id") Long id, @RequestBody UserDto request) {
-        return userService.updateUserbyAdmin(request, id);
+        return userService.updateUserbyAdmin(id, request);
     }
 
     @PutMapping(value = "/change-password")

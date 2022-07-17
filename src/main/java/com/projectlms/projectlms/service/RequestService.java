@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +31,6 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-
-    // @Autowired
-    // public RequestService(RequestRepository requestRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
-    //     this.requestRepository = requestRepository;
-    //     this.userRepository = userRepository;
-    //     this.categoryRepository = categoryRepository;
-    // }
 
     public ResponseEntity<Object> addRequest(RequestFormDto req) {
         try{

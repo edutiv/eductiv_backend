@@ -3,8 +3,6 @@ package com.projectlms.projectlms.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -140,9 +138,9 @@ public class ToolService {
             }
             log.info("Executing delete tool by id: {}", id);
             toolRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Data not found. Error: {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Get an error by delete tool: {}", e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }

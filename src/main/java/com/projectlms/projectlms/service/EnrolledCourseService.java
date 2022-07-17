@@ -44,15 +44,6 @@ public class EnrolledCourseService {
     @Autowired
     private ReportService reportService;
 
-    // @Autowired
-    // public EnrolledCourseService(EnrolledCourseRepository enrolledCourseRepository, CourseRepository courseRepository, UserRepository userRepository, ReportRepository reportRepository, SectionRepository sectionRepository) {
-    //     this.enrolledCourseRepository = enrolledCourseRepository;
-    //     this.courseRepository = courseRepository;
-    //     this.userRepository = userRepository;
-    //     this.reportRepository = reportRepository;
-    //     this.sectionRepository = sectionRepository;
-    // }
-
     private Material material;
     private Boolean check, checkAdmin;
     private Integer totalMaterials;
@@ -136,7 +127,6 @@ public class EnrolledCourseService {
 
             log.info("Update Rating and Review in enrolled course");
             enrolledCourse.get().setReview(request.getReview());
-            // Double totalRating = courseRepository.getTotalRating(enrolledCourse.)
             enrolledCourse.get().setRating(request.getRating());
             enrolledCourseRepository.save(enrolledCourse.get());
 

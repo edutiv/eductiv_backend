@@ -3,7 +3,6 @@ package com.projectlms.projectlms.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +34,6 @@ public class SectionService {
     private final MaterialRepository materialRepository;
     private final ReportRepository reportRepository;
     private final EnrolledCourseRepository enrolledCourseRepository;
-
-    // @Autowired
-    // public SectionService(SectionRepository sectionRepository, CourseRepository courseRepository, MaterialRepository materialRepository, ReportRepository reportRepository, EnrolledCourseRepository enrolledCourseRepository) {
-    //     this.sectionRepository = sectionRepository;
-    //     this.courseRepository = courseRepository;
-    //     this.materialRepository = materialRepository;
-    //     this.reportRepository = reportRepository;
-    //     this.enrolledCourseRepository = enrolledCourseRepository;
-    // }
 
     public ResponseEntity<Object> addSection(SectionDto request) {
         try {
