@@ -56,7 +56,6 @@ public class MaterialService {
                 .materialType(request.getMaterialType())
                 .materialName(request.getMaterialName())
                 .materialUrl(request.getMaterialUrl())
-                //.isCompleted(request.getIsComplete())
                 .build();
 
             materialRepository.save(material);
@@ -169,7 +168,6 @@ public class MaterialService {
             material.get().setMaterialType(request.getMaterialType());
             material.get().setMaterialName(request.getMaterialName());
             material.get().setMaterialUrl(request.getMaterialUrl());
-            //material.get().setIsCompleted(request.getIsComplete());
             materialRepository.save(material.get());
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, material.get(), HttpStatus.OK);
         } catch (Exception e) {
@@ -213,9 +211,9 @@ public class MaterialService {
                 enrolledCourse.setProgress(progress);
                 enrolledCourseRepository.save(enrolledCourse);
             });
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Data not found. Error: {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Get an error by delete material: {}", e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }

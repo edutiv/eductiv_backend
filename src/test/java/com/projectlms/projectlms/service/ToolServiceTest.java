@@ -318,7 +318,7 @@ public class ToolServiceTest {
         assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
         assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
     }
-
+ 
     @Test
     void deleteTool_Exception_Test() {
         when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder().id(1L).build()));
