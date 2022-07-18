@@ -61,7 +61,9 @@ public class UserService {
             }
             log.info("Find specialization by category id");
             Optional<Category> category = categoryRepository.searchCategoryById(request.getSpecializationId());
-            if(category.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            if(category.isEmpty()) {
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            } 
             
             //user.get().setProfileImage(request.getProfileImage());
             user.get().setCategory(category.get());
@@ -83,7 +85,9 @@ public class UserService {
             }
             log.info("Find specialization by category id");
             Optional<Category> category = categoryRepository.searchCategoryById(request.getSpecializationId());
-            if(category.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            if(category.isEmpty()) {
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
 
             user.get().setFirstname(request.getFirstname());
             user.get().setLastname(request.getLastname());
@@ -124,21 +128,20 @@ public class UserService {
 
     public ResponseEntity<Object> deleteUser(Long id) {
         try {
-            log.info("Check user is not admin");
-            check=false;
             Optional<User> user = userRepository.findById(id);
             if (user.isEmpty()) {
                 log.info("user not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
-            user.get().getRoles().forEach(role -> {
-                if(role.getName().equals(RoleEnum.ROLE_ADMIN)) check = true;
-            });
-            if(check == true) {
-                log.info("can't delete admin");
-                return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
+            // log.info("Check user is not admin");
+            // check=false;
+            // user.get().getRoles().forEach(role -> {
+            //     if(role.getName().equals(RoleEnum.ROLE_ADMIN)) check = true;
+            // });
+            // if(check == true) {
+            //     log.info("can't delete admin");
+            //     return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            // }
             log.info("Executing delete user by id: {}", id);
             userRepository.deleteById(id);
         } catch (Exception e) {

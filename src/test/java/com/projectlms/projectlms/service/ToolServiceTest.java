@@ -77,6 +77,23 @@ public class ToolServiceTest {
     }
 
     @Test
+    void addRequest_CourseNotFound_Test() {
+        when(courseRepository.searchCourseById(1L)).thenReturn(Optional.empty());
+        ResponseEntity<Object> responseEntity = toolService.addTool(ToolDto.builder()
+            .id(1L)
+            .toolName("Vue Devtools")
+            .toolIcon("https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1200px-Vue.js_Logo_2.svg.png")
+            .toolUrl("https://v2.vuejs.org/v2/guide/installation.html")
+            .courseId(1L)
+            .build()
+        );
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(),responseEntity.getStatusCodeValue());
+        assertEquals("DATA_NOT_FOUND",Objects.requireNonNull(response).getMessage());
+    }
+
+    @Test
     void getAllTool_Success_Test() {
         when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder().id(1L).build()));
 
@@ -109,8 +126,18 @@ public class ToolServiceTest {
 
     @Test
     void getAllTool_NotFound_Test() {
-        when(courseRepository.searchCourseById(1L)).thenReturn(Optional.empty());
         when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.empty());
+        when(toolRepository.findById(1L)).thenReturn(Optional.empty());
+        ResponseEntity<Object> responseEntity = toolService.getAllTool(1L);
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
+        assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
+    }
+
+    @Test
+    void getAllTool_ToolNotFound_Test() {
+        when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder().id(1L).build()));
         when(toolRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseEntity<Object> responseEntity = toolService.getAllTool(1L);
         ApiResponse response = (ApiResponse) responseEntity.getBody();
@@ -144,9 +171,19 @@ public class ToolServiceTest {
     }
 
     @Test
-    void getToolDetail_NotFound_Test() {
+    void getToolDetail_CourseNotFound_Test() {
         when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.empty());
-        when(toolRepository.searchToolById(1L, 1L)).thenReturn(Optional.empty());
+        ResponseEntity<Object> responseEntity = toolService.getToolDetail(1L,1L);
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
+        assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
+    }
+
+    @Test
+    void getToolDetail_ToolNotFound_Test() {
+        when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder().id(1L).build()));
+        when(toolRepository.searchToolById(anyLong(), anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> responseEntity = toolService.getToolDetail(1L,1L);
         ApiResponse response = (ApiResponse) responseEntity.getBody();
 
@@ -192,8 +229,21 @@ public class ToolServiceTest {
     }
 
     @Test
-    void updateTool_NotFound_Test() {
+    void updateTool_CourseNotFound_Test() {
         when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.empty());
+        ResponseEntity<Object> responseEntity = toolService.updateTool(1L, ToolDto.builder()
+                .toolName("Vue Devtools")
+                .toolIcon("https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1200px-Vue.js_Logo_2.svg.png")
+                .toolUrl("https://v2.vuejs.org/v2/guide/installation.html")
+                .build());
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
+        assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
+    }
+
+    @Test
+    void updateTool_ToolNotFound_Test() {
+        when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder().id(1L).build()));
         when(toolRepository.searchToolById(anyLong(), anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> responseEntity = toolService.updateTool(1L, ToolDto.builder()
                 .toolName("Vue Devtools")
@@ -247,8 +297,20 @@ public class ToolServiceTest {
     }
 
     @Test
-    void deleteTool_NotFound_Test() {
-        when(toolRepository.findById(anyLong())).thenReturn(Optional.empty());
+    void deleteTool_CourseNotFound_Test() {
+        when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.empty());
+        doNothing().when(toolRepository).deleteById(anyLong());
+
+        ResponseEntity<Object> responseEntity = toolService.deleteTool(1L, 1L);
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
+        assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
+    }
+
+    @Test
+    void deleteTool_ToolNotFound_Test() {
+        when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder().id(1L).build()));
+        when(toolRepository.searchToolById(anyLong(), anyLong())).thenReturn(Optional.empty());
         doNothing().when(toolRepository).deleteById(anyLong());
 
         ResponseEntity<Object> responseEntity = toolService.deleteTool(1L, 1L);

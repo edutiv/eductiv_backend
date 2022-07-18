@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -58,7 +57,7 @@ public class EnrolledCourseService {
 
             log.info("Find course by course id");
             Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
-            if(user.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            if(course.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             EnrolledCourse enrolledCourse = EnrolledCourse.builder()
                 .user(user.get())
@@ -102,10 +101,15 @@ public class EnrolledCourseService {
     public ResponseEntity<Object> deleteEnrolledCourse(Long id) {
         try {
             log.info("Executing delete enrolled course by id: {}", id);
+            Optional<EnrolledCourse> enrolledCourse = enrolledCourseRepository.findById(id);
+            if (enrolledCourse.isEmpty()) {
+                log.info("enrolled not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             enrolledCourseRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Data not found. Error: {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Get an error by executing delete enrolled course. Error: {}", e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }

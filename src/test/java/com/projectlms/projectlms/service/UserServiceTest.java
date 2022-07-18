@@ -201,6 +201,28 @@ public class UserServiceTest {
     }
 
     @Test
+    void updateUserbyUser_CategoryNotFound_Test() {
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(User.builder()
+            .id(1L)
+            .firstname("admin")
+            .lastname("edutiv")
+            .username("admin.edutiv@gmail.com")
+            .password("admin123")
+            .build()));
+        when(categoryRepository.searchCategoryById(anyLong())).thenReturn(Optional.empty());
+        ResponseEntity<Object> responseEntity = userService.updateUserbyUser(UserDto.builder()
+            .firstname("admin")
+            .lastname("edutiv")
+            .email("admin.edutiv@gmail.com")
+            .password("admin123")
+            .specializationId(1L)
+            .build());
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
+        assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
+    }
+
+    @Test
     void updateUserbyAdmin_Success_Test() {
         when(categoryRepository.searchCategoryById(anyLong())).thenReturn(Optional.of(Category.builder().id(1L).build()));
         User user = User.builder()
@@ -274,18 +296,40 @@ public class UserServiceTest {
     }
 
     @Test
-    void deleteUser_Success_Test() {
-        // when(userRepository.findById(anyLong())).thenReturn(Optional.of(User.builder()
-        //     .id(1L)
-        //     .lastname("edutiv")
-        //     .username("admin.edutiv@gmail.com")
-        //     .password("admin123")
-        //     .build()));
-        // doNothing().when(userRepository).deleteById(anyLong());
+    void updateUserbyAdmin_CategoryNotFound_Test() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(User.builder()
+            .id(1L)
+            .firstname("admin")
+            .lastname("edutiv")
+            .username("admin.edutiv@gmail.com")
+            .password("admin123")
+            .build()));
+        when(categoryRepository.searchCategoryById(anyLong())).thenReturn(Optional.empty());
+        ResponseEntity<Object> responseEntity = userService.updateUserbyAdmin(1L, UserDto.builder()
+            .firstname("admin")
+            .lastname("edutiv")
+            .email("admin.edutiv@gmail.com")
+            .password("admin123")
+            .specializationId(1L)
+            .build());
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
+        assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
+    }
 
-        // ApiResponse response = (ApiResponse) userService.deleteUser(1L).getBody();
-        // assertEquals("SUCCESS", response.getMessage());
-        // verify(userRepository, times(1)).deleteById(anyLong());
+    @Test
+    void deleteUser_Success_Test() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(User.builder()
+            .id(1L)
+            .lastname("edutiv")
+            .username("admin.edutiv@gmail.com")
+            .password("admin123")
+            .build()));
+        doNothing().when(userRepository).deleteById(anyLong());
+
+        ApiResponse response = (ApiResponse) userService.deleteUser(1L).getBody();
+        assertEquals("SUCCESS", response.getMessage());
+        verify(userRepository, times(1)).deleteById(anyLong());
     }
 
     @Test
