@@ -41,7 +41,9 @@ public class SectionService {
 
             log.info("Find course by course id");
             Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
-            if(course.isEmpty()) return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            if(course.isEmpty()) {
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
 
             Section section = Section.builder()
                 .course(course.get())
@@ -140,11 +142,9 @@ public class SectionService {
                 log.info("section not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
-
             log.info("Executing delete section by id: {}", id);
             sectionRepository.deleteById(id);
-            materialRepository.deleteMaterialBySection(id);
-
+            //materialRepository.deleteMaterialBySection(id);
             log.info("update material progress");
             List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByCourse(courseId);
 
@@ -165,10 +165,9 @@ public class SectionService {
                     enrolledCourseRepository.save(enrolledCourse);
                 });
             }
-
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Data not found. Error: {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Get an error by delete section: {}", e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }
