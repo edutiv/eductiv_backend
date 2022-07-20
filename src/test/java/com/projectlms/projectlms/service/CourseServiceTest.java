@@ -117,17 +117,37 @@ public class CourseServiceTest {
 
     @Test
     void getAllCourse_Success_Test() {
-        
-    }
+        when(categoryRepository.searchCategoryById(anyLong())).thenReturn(Optional.of(Category.builder().id(1L).build()));
 
-    @Test
-    void getAllCourse_NotFound_Test() {
-
+        when(courseRepository.findAll()).thenReturn(List.of(Course.builder()
+                .id(1L)
+                .courseName("Introduction to Backend Enginner with Java Spring Boot")
+                .courseImage("https://i.pinimg.com/564x/b9/b7/0a/b9b70ae0c0b202aa4994d11be7dd57f4.jpg")
+                .category(Category.builder().id(1L).build())
+                .description("Java Spring Boot is a multifunctional pogramming language that is widely used by large Indonesian companies such as Toopedia, Gojek and many more.")
+                .totalVideo(12)
+                .totalTimes("1h 35m")
+                .build()
+        ));
+        ResponseEntity<Object> responseEntity = courseService.getAllCourse();
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+        List<Course> courses = (List<Course>) Objects.requireNonNull(response).getData();
     }
 
     @Test
     void getAllCourse_Exception_Test() {
-        when(courseRepository.findAll()).thenReturn(Collections.emptyList());
+        when(categoryRepository.searchCategoryById(anyLong())).thenReturn(Optional.of(Category.builder().id(1L).build()));
+        when(courseRepository.findAll()).thenThrow(NullPointerException.class);
+        ResponseEntity<Object> responseEntity = courseService.getAllCourse();
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseEntity.getStatusCodeValue());
+        assertEquals("HAPPENED_ERROR", Objects.requireNonNull(response).getMessage());
+    }
+
+    @Test
+    void getAllCourse_NotFound_Test() {
+        when(categoryRepository.searchCategoryById(anyLong())).thenReturn(Optional.empty());
+        when(courseRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseEntity<Object> responseEntity = courseService.getAllCourse();
         ApiResponse response = (ApiResponse) responseEntity.getBody();
 
@@ -135,20 +155,57 @@ public class CourseServiceTest {
         assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
     }
 
+
+
     @Test
     void getCourseDetail_Success_Test() {
+        when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder()
+                .id(1L)
+                .courseName("Introduction to Backend Enginner with Java Spring Boot")
+                .courseImage("https://i.pinimg.com/564x/b9/b7/0a/b9b70ae0c0b202aa4994d11be7dd57f4.jpg")
+                .category(Category.builder().id(1L).build())
+                .description("Java Spring Boot is a multifunctional pogramming language that is widely used by large Indonesian companies such as Toopedia, Gojek and many more.")
+                .totalVideo(12)
+                .totalTimes("1h 35m")
+                .build()
+        ));
+
+        ResponseEntity<Object> responseEntity = courseService.getCourseDetail( 1L);
+        ApiResponse response = (ApiResponse) responseEntity.getBody();
+        Course course = (Course) Objects.requireNonNull(response).getData();
+
+        assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
+        assertEquals("SUCCESS", response.getMessage());
+        assertEquals(1L, course.getId());
+        assertEquals("Introduction to Backend Enginner with Java Spring Boot", course.getCourseName());
+        assertEquals("https://i.pinimg.com/564x/b9/b7/0a/b9b70ae0c0b202aa4994d11be7dd57f4.jpg", course.getCourseImage());
+        assertEquals("Java Spring Boot is a multifunctional pogramming language that is widely used by large Indonesian companies such as Toopedia, Gojek and many more.", course.getDescription());
+        assertEquals(12, course.getTotalVideo());
+        assertEquals("1h 35m", course.getTotalTimes());
 
     }
 
     @Test
     void getCourseDetail_Exception_Test() {
+            when(categoryRepository.searchCategoryById(anyLong())).thenReturn(Optional.of(Category.builder().id(1L).build()));
+            when(courseRepository.searchCourseById(1L)).thenThrow(NullPointerException.class);
+            ResponseEntity<Object> responseEntity = courseService.getCourseDetail(1L);
+            ApiResponse response = (ApiResponse) responseEntity.getBody();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseEntity.getStatusCodeValue());
+        assertEquals("HAPPENED_ERROR", Objects.requireNonNull(response).getMessage());
 
     }
 
     @Test
     void getCourseDetail_NotFound_Test() {
+            when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.empty());
+            ResponseEntity<Object> responseEntity = courseService.getCourseDetail(1L);
+            ApiResponse response = (ApiResponse) responseEntity.getBody();
 
-    }
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
+        assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
+        }
 
     @Test
     void updateCourse_Success_Test() {
