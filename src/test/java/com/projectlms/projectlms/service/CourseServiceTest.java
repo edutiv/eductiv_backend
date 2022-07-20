@@ -132,6 +132,9 @@ public class CourseServiceTest {
         ResponseEntity<Object> responseEntity = courseService.getAllCourse();
         ApiResponse response = (ApiResponse) responseEntity.getBody();
         List<Course> courses = (List<Course>) Objects.requireNonNull(response).getData();
+        assertEquals(HttpStatus.OK.value(),responseEntity.getStatusCodeValue());
+        assertEquals("SUCCESS",response.getMessage());
+        assertEquals(1,courses.size());
     }
 
     @Test
@@ -154,8 +157,6 @@ public class CourseServiceTest {
         assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
         assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
     }
-
-
 
     @Test
     void getCourseDetail_Success_Test() {
@@ -182,7 +183,6 @@ public class CourseServiceTest {
         assertEquals("Java Spring Boot is a multifunctional pogramming language that is widely used by large Indonesian companies such as Toopedia, Gojek and many more.", course.getDescription());
         assertEquals(12, course.getTotalVideo());
         assertEquals("1h 35m", course.getTotalTimes());
-
     }
 
     @Test
@@ -194,7 +194,6 @@ public class CourseServiceTest {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseEntity.getStatusCodeValue());
         assertEquals("HAPPENED_ERROR", Objects.requireNonNull(response).getMessage());
-
     }
 
     @Test
@@ -205,7 +204,7 @@ public class CourseServiceTest {
 
         assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCodeValue());
         assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
-        }
+    }
 
     @Test
     void updateCourse_Success_Test() {
@@ -346,47 +345,38 @@ public class CourseServiceTest {
         assertEquals("HAPPENED_ERROR", Objects.requireNonNull(response).getMessage());
     }
 
-    @Test
-    void getCourseByUserSpec_Success_Test() {
+    // @Test
+    // void getCourseByUserSpec_Success_Test() {
 
-    }
+    // }
 
-    @Test
-    void getCourseByUserSpec_Exception_Test() {
+    // @Test
+    // void getCourseByUserSpec_Exception_Test() {
 
-    }
+    // }
 
-    @Test
-    void getCourseByUserSpec_Exception2_Test() {
+    // @Test
+    // void getCourseByUserSpec_Exception2_Test() {
 
-    }
+    // }
 
-    @Test
-    void getCourseByUserSpec_NotFound_Test() {
+    // @Test
+    // void getCourseByUserSpec_NotFound_Test() {
 
-    }
+    // }
 
-    @Test
-    void searchByCourseName_Success_Test() {
+    // @Test
+    // void searchByCourseName_Success_Test() {
 
-    }
+    // }
 
-    @Test
-    void searchByCourseName_NotFound_Test() {
+    // @Test
+    // void searchByCourseName_NotFound_Test() {
 
-    }
+    // }
 
-    @Test
-    void searchByCourseName_Exception_Test() {
+    // @Test
+    // void searchByCourseName_Exception_Test() {
 
-    }
-
-
-
-    
-
-
-
-    
-
+    // }
 }
