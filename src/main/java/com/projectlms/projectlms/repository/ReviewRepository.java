@@ -1,11 +1,25 @@
-package com.projectlms.projectlms.repository;
+// package com.projectlms.projectlms.repository;
 
-import org.springframework.stereotype.Repository;
+// import java.util.List;
+// import java.util.Optional;
 
-import com.projectlms.projectlms.domain.dao.Review;
-import com.projectlms.projectlms.repository.softdeletes.SoftDeletesRepository;
+// import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.Modifying;
+// import org.springframework.data.jpa.repository.Query;
+// import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ReviewRepository extends SoftDeletesRepository<Review, Long> {
+// import com.projectlms.projectlms.domain.dao.Review;
+
+// @Repository
+// public interface ReviewRepository extends JpaRepository<Review, Long> {
     
-}
+//     @Query(value = "SELECT * FROM M_REVIEW r WHERE r.is_deleted = false AND r.course_id = ?", nativeQuery = true)
+//     List<Review> searchAllReviews(Long courseId);
+
+//     @Query(value = "SELECT * FROM M_REVIEW r WHERE r.is_deleted = false AND r.id = ? AND r.course_id = ?", nativeQuery = true)
+//     Optional<Review> searchReviewById(Long id, Long courseId);
+
+//     @Modifying
+//     @Query(value = "UPDATE M_REVIEW SET is_deleted = true WHERE course_id = ?", nativeQuery = true)
+//     void deleteReviewByCourse(Long id);
+// }

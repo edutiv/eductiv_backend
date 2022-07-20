@@ -1,6 +1,7 @@
 package com.projectlms.projectlms.domain.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -24,7 +25,10 @@ public class CourseDto implements Serializable {
     private String courseName;
     private String courseImage;
     private Long categoryId;
+    private Long mentorId;
     private String description;
+    private List<String> learningObjectives;
+    private List<String> advantages;
     private Integer totalVideo;
-    private Integer totalTimes;
+    private String totalTimes;
 }

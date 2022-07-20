@@ -5,8 +5,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
+
 import javax.persistence.*;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
@@ -19,6 +26,8 @@ import com.projectlms.projectlms.domain.common.BaseEntityWithDeletedAt;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Table(name = "M_MATERIAL")
+@SQLDelete(sql = "UPDATE M_MATERIAL SET is_deleted = true WHERE id=?")
+@Where(clause = "is_deleted = false")
 public class Material extends BaseEntityWithDeletedAt{
     private static final long serialVersionUID = 1L;
     
@@ -28,6 +37,7 @@ public class Material extends BaseEntityWithDeletedAt{
 
     @ManyToOne
     @JoinColumn(name = "section_id", nullable = false)
+    @JsonBackReference
     private Section section;
 
     @Column(name = "material_type", nullable = false)
@@ -39,6 +49,7 @@ public class Material extends BaseEntityWithDeletedAt{
     @Column(name = "material_url", nullable = false)
     private String materialUrl; 
 
-    @Column(name = "is_completed")
-    private Boolean isCompleted; 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "material")
+    @JsonBackReference
+    private List<Report> reports;
 }

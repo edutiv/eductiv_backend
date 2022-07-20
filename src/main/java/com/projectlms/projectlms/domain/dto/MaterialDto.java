@@ -22,8 +22,8 @@ public class MaterialDto implements Serializable{
     
     private Long id;
     private Long sectionId;
+    private Long courseId;
     private String materialType;
     private String materialName;
     private String materialUrl;
-    private Boolean isComplete;
 }
