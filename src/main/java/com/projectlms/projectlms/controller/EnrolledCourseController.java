@@ -2,6 +2,7 @@ package com.projectlms.projectlms.controller;
 
 import java.io.ByteArrayInputStream;
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -57,8 +58,13 @@ public class EnrolledCourseController {
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> updateRatingReview(Principal principal, @PathVariable(value = "id") Long id, @RequestBody EnrolledCourseDto request) {
-        request.setId(id);
-        return requestService.updateRatingReview(principal.getName(), request);
+        try {
+            request.setId(id);
+            EnrolledCourse enrolledCourse = requestService.updateRatingReview(principal.getName(), request);
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourse, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping(value = "/{id}")
@@ -69,7 +75,12 @@ public class EnrolledCourseController {
 
     @GetMapping(value = "/history")
     public ResponseEntity<Object> getEnrolledCourseByUser(Principal principal) {
-        return requestService.getEnrolledCourseByUser(principal.getName());
+        try {
+            List<EnrolledCourse> enrolledCourses = requestService.getEnrolledCourseByUser(principal.getName());
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourses, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(value = "/courses/{id}")
@@ -80,9 +91,21 @@ public class EnrolledCourseController {
     @PutMapping(value = "/progress/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> updateProgress(Principal principal, @PathVariable Long id, @RequestBody EnrolledCourseDto request) {
-        request.setEmail(principal.getName());
-        return requestService.updateProgress(id, request);
+        try {
+            request.setEmail(principal.getName());
+            EnrolledCourse enrolledCourse = requestService.updateProgress(id, request);
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourse, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+    // @PutMapping(value = "/progress/{id}")
+    // @PreAuthorize("hasRole('USER')")
+    // public ResponseEntity<Object> updateProgress(Principal principal, @PathVariable Long id, @RequestBody EnrolledCourseDto request) {
+    //     request.setEmail(principal.getName());
+    //     return requestService.updateProgress(id, request);
+    // }
 
     @GetMapping(value = "/download-report/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> getReport (@PathVariable Long id) {

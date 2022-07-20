@@ -114,72 +114,6 @@ public class EnrolledCourseService {
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }
 
-    public ResponseEntity<Object> updateRatingReview(String email, EnrolledCourseDto request) {
-        try {
-            log.info("Update rating review: {}", request);
-            Optional<EnrolledCourse> enrolledCourse = enrolledCourseRepository.findById(request.getId());
-            if (enrolledCourse.isEmpty()) {
-                log.info("enrolled course not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
-
-            log.info("Check user with the enroll course");
-            if(!enrolledCourse.get().getUser().getUsername().equals(email)) {
-                log.info("enrolled course id with email " + email + " not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
-
-            log.info("Update Rating and Review in enrolled course");
-            enrolledCourse.get().setReview(request.getReview());
-            enrolledCourse.get().setRating(request.getRating());
-            enrolledCourseRepository.save(enrolledCourse.get());
-
-            log.info("Update rating in course");
-
-            log.info("Get course by id");
-            Optional<Course> course = courseRepository.findById(enrolledCourse.get().getCourse().getId());
-            if (course.isEmpty()) {
-                log.info("course not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
-
-            log.info("Save rating in course");
-            Integer ratingEnrolledCourse = enrolledCourseRepository.countRatingByCourse(course.get().getId());
-
-            if(ratingEnrolledCourse > 1) {
-                Double sumRating = enrolledCourseRepository.sumRatingByCourse(course.get().getId());
-                Double ratingCourse = sumRating/ratingEnrolledCourse;
-                course.get().setTotalRating(ratingCourse);
-                courseRepository.save(course.get());
-            } else {
-                course.get().setTotalRating(request.getRating());
-                courseRepository.save(course.get());
-            }
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourse.get(), HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Get an error by executing update rating review, Error : {}",e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public ResponseEntity<Object> getEnrolledCourseByUser(String email) {
-        try {
-            log.info("Find user: {}", email);
-
-            User user = userRepository.findUsername(email);
-            List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByUser(user.getId());
-
-            if (enrolledCourses.isEmpty()) {
-                log.info("enrolled courses empty");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourses, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Get an error by executing get enrolled course by user, Error : {}",e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     public ResponseEntity<Object> getEnrolledCourseByCourse(Long id) {
         try {
             log.info("Find course by course id");
@@ -199,20 +133,71 @@ public class EnrolledCourseService {
         }
     }
 
-    public ResponseEntity<Object> updateProgress(Long id, EnrolledCourseDto request) {
+    public List<EnrolledCourse> getEnrolledCourseByUser(String email) {
+        try {
+            log.info("Find user: {}", email);
+            User user = userRepository.findUsername(email);
+            List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByUser(user.getId());
+
+            if (enrolledCourses.isEmpty()) throw new Exception("enrolled courses empty");
+            return enrolledCourses;
+        } catch (Exception e) {
+            log.error("Get enrolled course by user error");
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public EnrolledCourse updateRatingReview(String email, EnrolledCourseDto request) {
+        try {
+            log.info("Find enrolled course by id: {}", request);
+            EnrolledCourse enrolledCourse = enrolledCourseRepository.findById(request.getId())
+                .orElseThrow(() -> new Exception("enrolled course not found"));
+
+            log.info("Check user with the enroll course");
+            if(!enrolledCourse.getUser().getUsername().equals(email))
+                throw new Exception("enrolled course " + request.getId() +" with account " + email + " not found");
+
+            log.info("Update Rating and Review in enrolled course");
+            enrolledCourse.setReview(request.getReview());
+            enrolledCourse.setRating(request.getRating());
+            enrolledCourseRepository.save(enrolledCourse);
+
+            log.info("Update rating in course");
+
+            log.info("Find course by id");
+            Course course = courseRepository.findById(enrolledCourse.getCourse().getId())
+                .orElseThrow(() -> new Exception("course id " + enrolledCourse.getCourse().getId() + " not found"));
+
+            log.info("Save rating in course");
+            Integer ratingEnrolledCourse = enrolledCourseRepository.countRatingByCourse(course.getId());
+
+            if(ratingEnrolledCourse > 1) {
+                Double sumRating = enrolledCourseRepository.sumRatingByCourse(course.getId());
+                Double ratingCourse = sumRating/ratingEnrolledCourse;
+                course.setTotalRating(ratingCourse);
+                courseRepository.save(course);
+            } else {
+                course.setTotalRating(request.getRating());
+                courseRepository.save(course);
+            }
+            return enrolledCourse;
+        } catch (Exception e) {
+            log.error("Get an error by executing update rating review, Error : {}",e.getMessage());
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public EnrolledCourse updateProgress(Long id, EnrolledCourseDto request) {
         try {
             check = false; 
             totalMaterials = 0;
             checkAdmin = false;
 
             log.info("Get enrolled course by id");
-            Optional<EnrolledCourse> enrolledCourse = enrolledCourseRepository.findById(id);
-            if (enrolledCourse.isEmpty()) {
-                log.info("enrolled course not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
-
-            log.info("Check user with enrolled course user {}", request.getEmail());
+            EnrolledCourse enrolledCourse = enrolledCourseRepository.findById(id)
+                .orElseThrow(() -> new Exception("enrolled course id " + id + " not found"));
+           
+            log.info("Check user {}", request.getEmail());
             User user = userRepository.findUsername(request.getEmail());
             user.getRoles().forEach(checkRole -> {
                 if(checkRole.getName().equals(RoleEnum.ROLE_ADMIN)) {
@@ -221,12 +206,12 @@ public class EnrolledCourseService {
             });
 
             if(checkAdmin == false) {
-                if(!enrolledCourse.get().getUser().getUsername().equals(request.getEmail()))
+                if(!enrolledCourse.getUser().getUsername().equals(request.getEmail()))
                     throw new Exception("Course taken id " + id + " with email " + request.getEmail() + " not found");
             }
 
-            log.info("Get section course by enrolled course");
-            List<Section> sections = sectionRepository.searchAllSections(enrolledCourse.get().getCourse().getId());
+            log.info("Get section course");
+            List<Section> sections = sectionRepository.searchAllSections(enrolledCourse.getCourse().getId());
 
             sections.forEach(checkSection -> {
                 List<Material> materials = checkSection.getMaterials();
@@ -260,15 +245,14 @@ public class EnrolledCourseService {
             Integer completedCourse = reportRepository.findByCompleted(id).size();
             Integer progress = (completedCourse*100)/totalMaterials;
 
-            enrolledCourse.get().setProgress(progress);
+            enrolledCourse.setProgress(progress);
 
-            enrolledCourseRepository.save(enrolledCourse.get());
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, enrolledCourse.get(), HttpStatus.OK);
+            enrolledCourseRepository.save(enrolledCourse);
+            return enrolledCourse;
         } catch (Exception e) {
             log.error("Get an error by updating report enrolled course, Error : {}",e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    
 }

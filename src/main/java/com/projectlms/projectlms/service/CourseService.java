@@ -3,7 +3,6 @@ package com.projectlms.projectlms.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,8 +15,6 @@ import com.projectlms.projectlms.domain.dao.User;
 import com.projectlms.projectlms.domain.dto.CourseDto;
 import com.projectlms.projectlms.repository.CategoryRepository;
 import com.projectlms.projectlms.repository.CourseRepository;
-import com.projectlms.projectlms.repository.SectionRepository;
-import com.projectlms.projectlms.repository.ToolRepository;
 import com.projectlms.projectlms.repository.UserRepository;
 import com.projectlms.projectlms.util.ResponseUtil;
 
@@ -32,20 +29,7 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CategoryRepository categoryRepository;
-    private final SectionRepository sectionRepository;
-    private final ToolRepository toolRepository;
-    //private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
-
-    // @Autowired
-    // public CourseService(CourseRepository courseRepository, CategoryRepository categoryRepository, SectionRepository sectionRepository, ToolRepository toolRepository, UserRepository userRepository) {
-    //     this.courseRepository = courseRepository;
-    //     this.categoryRepository = categoryRepository;
-    //     this.sectionRepository = sectionRepository;
-    //     this.toolRepository = toolRepository;
-    //     //this.reviewRepository = reviewRepository;
-    //     this.userRepository = userRepository;
-    // }
 
     public ResponseEntity<Object> addCourse(CourseDto request) {
         try {
@@ -106,16 +90,16 @@ public class CourseService {
 
     public ResponseEntity<Object> updateCourse(Long id, CourseDto request) {
         try {
-            log.info("Update course: {}", request);
-            Optional<Course> course = courseRepository.searchCourseById(id);
-            if (course.isEmpty()) {
-                log.info("course not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
             log.info("Find category by category id");
             Optional<Category> category = categoryRepository.searchCategoryById(request.getCategoryId());
             if(category.isEmpty()) {
                 log.info("category not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            log.info("Update course: {}", request);
+            Optional<Course> course = courseRepository.searchCourseById(id);
+            if (course.isEmpty()) {
+                log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
 
@@ -137,13 +121,17 @@ public class CourseService {
 
     public ResponseEntity<Object> deleteCourse(Long id) {
         try {
+            log.info("Find course by id");
+            Optional<Course> course = courseRepository.searchCourseById(id);
+            if (course.isEmpty()) {
+                log.info("course not found");
+                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             log.info("Executing delete course by id: {}", id);
             courseRepository.deleteById(id);
-            sectionRepository.deleteSectionByCourse(id);
-            toolRepository.deleteToolByCourse(id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Data not found. Error: {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Get an error by delete course: {}", e.getMessage());
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
     }

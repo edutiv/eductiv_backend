@@ -2,6 +2,7 @@ package com.projectlms.projectlms.controller;
 
 import java.security.Principal;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 //import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.projectlms.projectlms.constant.AppConstant;
+import com.projectlms.projectlms.domain.dao.User;
 import com.projectlms.projectlms.domain.dto.UserDto;
 import com.projectlms.projectlms.service.UserService;
+import com.projectlms.projectlms.util.ResponseUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -68,8 +71,14 @@ public class UserController {
     }
 
     @PutMapping(value = "/change-password")
-    public ResponseEntity<Object> changePassword(Principal principal, @RequestBody UserDto request) {
-        request.setEmail(principal.getName());
-        return userService.changePassword(request);
+    public ResponseEntity<?> changePassword(Principal principal, @RequestBody UserDto request) {
+        try{
+            request.setEmail(principal.getName());
+            User user = userService.changePassword(request);
+            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, user, HttpStatus.OK);
+        } catch(Exception e) {
+            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
     }   
 }

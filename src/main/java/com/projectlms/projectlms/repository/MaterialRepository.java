@@ -19,9 +19,9 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
     @Query(value = "SELECT * FROM M_MATERIAL m WHERE m.is_deleted = false AND m.id = ? AND m.section_id = ?", nativeQuery = true)
     Optional<Material> searchMaterialById(Long id, Long sectionId);
 
-    @Modifying
-    @Query(value = "UPDATE M_MATERIAL SET is_deleted = true WHERE section_id = ?", nativeQuery = true)
-    void deleteMaterialBySection(Long id);
+    // @Modifying
+    // @Query(value = "UPDATE M_MATERIAL SET is_deleted = true WHERE section_id = ?", nativeQuery = true)
+    // void deleteMaterialBySection(Long id);
 
     @Query(value = "SELECT * FROM M_MATERIAL m INNER JOIN M_SECTION s ON s.id = m.section_id WHERE m.is_deleted = false AND s.course_id = ? AND s.is_deleted = false", nativeQuery = true)
     List<Material> countMaterials(Long courseId);

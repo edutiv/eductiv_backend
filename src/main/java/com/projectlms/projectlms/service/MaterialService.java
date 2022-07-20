@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@Transactional
+//@Transactional
 @RequiredArgsConstructor
 public class MaterialService {
     private final MaterialRepository materialRepository;
@@ -40,9 +40,9 @@ public class MaterialService {
     public ResponseEntity<Object> addMaterial(MaterialDto request) {
         try {
             
-            log.info("Find course by course id: {}");
-            Optional<Course> courseDetail = courseRepository.searchCourseById(request.getCourseId());
-            if (courseDetail.isEmpty()) {
+            log.info("Find course by course id");
+            Optional<Course> course = courseRepository.searchCourseById(request.getCourseId());
+            if(course.isEmpty()) {
                 log.info("course not found");
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
@@ -59,7 +59,7 @@ public class MaterialService {
                 .build();
 
             materialRepository.save(material);
-
+            
             log.info("Update material report and progress");
             List<EnrolledCourse> enrolledCourses = enrolledCourseRepository.getEnrolledCourseByCourse(request.getCourseId());
 

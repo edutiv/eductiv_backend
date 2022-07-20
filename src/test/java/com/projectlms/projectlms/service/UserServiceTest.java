@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jeasy.random.EasyRandom;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,11 +29,17 @@ import com.projectlms.projectlms.repository.ToolRepository;
 import com.projectlms.projectlms.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = UserService.class)
 public class UserServiceTest {
+    private final EasyRandom EASY_RANDOM = new EasyRandom();
+    private User user;
+    private UserDto userDto;
+
     @MockBean
     private UserRepository userRepository;
 
@@ -42,6 +51,13 @@ public class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        userDto = EASY_RANDOM.nextObject(UserDto.class);
+        user= EASY_RANDOM.nextObject(User.class);
+    }
 
     @Test
     void getAllUser_Success_Test() {
@@ -354,9 +370,31 @@ public class UserServiceTest {
         assertEquals("DATA_NOT_FOUND", Objects.requireNonNull(response).getMessage());
     }
 
-    // @Test
-    // void testChangePassword() {
+    @Test
+    void ChangePassword_Success_Test() {
+        when(userRepository.findByUsername(userDto.getEmail())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(userDto.getCurrentPassword(), user.getPassword())).thenReturn(true);
+        
+        var result = userService.changePassword(userDto);
+        
+        assertEquals(user, result);
+    }
+    
+    @Test
+    void changePassword_Exception_Test() {
+        assertThrows(RuntimeException.class, () -> {
+            userService.changePassword(userDto);
+        });
+    }
 
-    // }
+    @Test
+    void changePasswordException2Test() {
+        when(userRepository.findByUsername(userDto.getEmail()))
+            .thenReturn(Optional.of(user));
+
+        assertThrows(RuntimeException.class, () -> {
+            userService.changePassword(userDto);
+        });
+    }
 
 }

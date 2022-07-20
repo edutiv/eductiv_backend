@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+// import org.jeasy.random.EasyRandom;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.mockito.MockitoAnnotations;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,13 @@ import com.projectlms.projectlms.repository.SectionRepository;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = MaterialService.class)
 public class MaterialServiceTest {
+    // private final EasyRandom EASY_RANDOM = new EasyRandom();
+    // private List<Material> materials;
+    // private MaterialDto materialDto;
+    // private Material material;
+    // private Section section;
+    // private Course course;
+
     @MockBean
     private MaterialRepository materialRepository;
 
@@ -56,7 +66,6 @@ public class MaterialServiceTest {
     void addMaterial_Success_Test() {
         // when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder().id(1L).build()));
         // when(sectionRepository.searchSectionById(anyLong(), anyLong())).thenReturn(Optional.of(Section.builder().id(1L).build()));
-        // when(enrolledCourseRepository.getEnrolledCourseByCourse(anyLong())).thenReturn(List.of(EnrolledCourse.builder().id(1L).build()));
 
         // when(materialRepository.save(any())).thenReturn(Material.builder()
         //     .id(1L)
@@ -68,7 +77,6 @@ public class MaterialServiceTest {
         // );
 
         // ResponseEntity<Object> responseEntity = materialService.addMaterial(MaterialDto.builder()
-        //     .id(1L)
         //     .sectionId(1L)
         //     .materialType("video")
         //     .materialName("Introduction Java Spring Boot")
@@ -78,8 +86,8 @@ public class MaterialServiceTest {
 
         // ApiResponse response = (ApiResponse) responseEntity.getBody();
         // Material material = (Material) Objects.requireNonNull(response).getData();
-        // assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
-        // assertEquals("SUCCESS", response.getMessage());
+        // assertEquals(HttpStatus.OK.value(),responseEntity.getStatusCodeValue());
+        // assertEquals("SUCCESS",response.getMessage());
         // assertEquals(1L, material.getId());
         // assertEquals(1L, material.getSection().getId());
         // assertEquals("video", material.getMaterialType());
@@ -91,7 +99,7 @@ public class MaterialServiceTest {
     void addMaterial_Exception_Test() {
         // when(courseRepository.searchCourseById(anyLong())).thenReturn(Optional.of(Course.builder().id(1L).build()));
         // when(sectionRepository.searchSectionById(anyLong(), anyLong())).thenReturn(Optional.of(Section.builder().id(1L).build()));
-        // when(enrolledCourseRepository.getEnrolledCourseByCourse(anyLong())).thenReturn(List.of(EnrolledCourse.builder().id(1L).build()));
+        // //when(enrolledCourseRepository.getEnrolledCourseByCourse(anyLong())).thenReturn(List.of(EnrolledCourse.builder().id(1L).build()));
         
         // when(materialRepository.save(any())).thenThrow(NullPointerException.class);
         // ResponseEntity<Object> responseEntity = materialService.addMaterial(MaterialDto.builder()

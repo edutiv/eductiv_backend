@@ -1,12 +1,11 @@
 package com.projectlms.projectlms.service;
 
-
 import static org.mockito.Mockito.when;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +22,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.projectlms.projectlms.domain.common.ApiResponse;
 import com.projectlms.projectlms.domain.dao.Course;
 import com.projectlms.projectlms.domain.dao.EnrolledCourse;
+import com.projectlms.projectlms.domain.dao.Material;
+import com.projectlms.projectlms.domain.dao.Report;
+import com.projectlms.projectlms.domain.dao.RoleEnum;
+import com.projectlms.projectlms.domain.dao.Section;
 import com.projectlms.projectlms.domain.dao.User;
 import com.projectlms.projectlms.domain.dto.EnrolledCourseDto;
 import com.projectlms.projectlms.repository.CourseRepository;
@@ -39,7 +42,23 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(classes = EnrolledCourseService.class)
 public class EnrolledCourseServiceTest {
     private final EasyRandom EASY_RANDOM = new EasyRandom();
+    private List<EnrolledCourse> enrolledCourses;
+    private EnrolledCourse enrolledCourse;
+    private EnrolledCourseDto enrolledCourseDto;
+    private User user;
+    private Course course;
+    private Material material;
     private Long id;
+    private Integer totalMaterials;
+    private Boolean check;
+
+    public Boolean getCheck() {
+        return check;
+    }
+
+    public void setCheck(Boolean check) {
+        this.check = check;
+    }
 
     @MockBean
     private EnrolledCourseRepository enrolledCourseRepository;
@@ -66,6 +85,16 @@ public class EnrolledCourseServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         id = EASY_RANDOM.nextObject(Long.class);
+        enrolledCourses= EASY_RANDOM.objects(EnrolledCourse.class, 2).collect(Collectors.toList());
+        enrolledCourse = EASY_RANDOM.nextObject(EnrolledCourse.class);
+        enrolledCourseDto = EASY_RANDOM.nextObject(EnrolledCourseDto.class);
+        user = EASY_RANDOM.nextObject(User.class);
+        course = EASY_RANDOM.nextObject(Course.class);
+
+        enrolledCourseDto.setCourseId(course.getId());
+        enrolledCourseDto.setEmail(user.getUsername());
+        enrolledCourseDto.setId(enrolledCourse.getId());
+
     }
 
     @Test
@@ -281,46 +310,143 @@ public class EnrolledCourseServiceTest {
 
     @Test
     void getEnrolledCourseByUser_Success_Test() {
-
-    }
-
-    @Test
-    void getEnrolledCourseByUser_NotFound_Test() {
-
+        when(userRepository.findUsername(user.getUsername())).thenReturn(user);
+        when(enrolledCourseRepository.getEnrolledCourseByUser(user.getId())).thenReturn(enrolledCourses);
+        var result = enrolledCourseService.getEnrolledCourseByUser(user.getUsername());
+        assertEquals(enrolledCourses, result);
     }
 
     @Test
     void getEnrolledCourseByUser_Exception_Test() {
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.getEnrolledCourseByUser(user.getUsername());
+        });
+    }
 
+    @Test
+    void getEnrolledCourseByUser_Exception2_Test() {
+        when(userRepository.findUsername(user.getUsername())).thenReturn(user);
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.getEnrolledCourseByUser(user.getUsername());
+        });
     }
 
     @Test
     void updateRatingReview_Success_Test() {
+        when(enrolledCourseRepository.findById(enrolledCourse.getId()))
+            .thenReturn(Optional.of(enrolledCourse));
+        enrolledCourse.setUser(user);
+        when(courseRepository.findById(enrolledCourse.getCourse().getId()))
+            .thenReturn(Optional.of(course));
+        
+        Integer ratingEnrolledCourse = 4;
+        when(enrolledCourseRepository.countRatingByCourse(course.getId()))
+            .thenReturn(ratingEnrolledCourse);
+        var result = enrolledCourseService.updateRatingReview(user.getUsername(), enrolledCourseDto);
+        assertEquals(enrolledCourse, result);
+    }
 
+    @Test
+    void updateRatingReview_Success2_Test() {
+        when(enrolledCourseRepository.findById(enrolledCourse.getId()))
+            .thenReturn(Optional.of(enrolledCourse));
+        enrolledCourse.setUser(user);
+        when(courseRepository.findById(enrolledCourse.getCourse().getId()))
+            .thenReturn(Optional.of(course));
+        var result = enrolledCourseService.updateRatingReview(user.getUsername(), enrolledCourseDto);
+        assertEquals(enrolledCourse, result);
     }
 
     @Test
     void updateRatingReview_Exception_Test() {
-
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.updateRatingReview(user.getUsername(), enrolledCourseDto);
+        });
     }
 
     @Test
-    void updateRatingReview_NotFound_Test() {
+    void updateRatingReview_Exception2_Test() {
+        when(enrolledCourseRepository.findById(enrolledCourse.getId()))
+            .thenReturn(Optional.of(enrolledCourse));
+        User random = EASY_RANDOM.nextObject(User.class);
+        enrolledCourse.setUser(random);
 
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.updateRatingReview(user.getUsername(), enrolledCourseDto);
+        });
     }
 
     @Test
-    void updateProgress_Success_Test() {
+    void updateRatingReview_Exception3_Test() {
+        when(enrolledCourseRepository.findById(enrolledCourse.getId()))
+            .thenReturn(Optional.of(enrolledCourse));
+        enrolledCourse.setUser(user);
 
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.updateRatingReview(user.getUsername(), enrolledCourseDto);
+        });
     }
 
     @Test
     void updateProgress_Exception_Test() {
-
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.updateProgress(enrolledCourse.getId(), enrolledCourseDto);
+        });
     }
 
     @Test
-    void updateProgress_NotFound_Test() {
+    void updateProgress_Exception2_Test() {
+        when(enrolledCourseRepository.findById(enrolledCourse.getId()))
+            .thenReturn(Optional.of(enrolledCourse));
+        when(userRepository.findUsername(enrolledCourseDto.getEmail()))
+            .thenReturn(user);
+        user.getRoles().forEach(role -> {
+            role.setName(RoleEnum.ROLE_USER);
+        });
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.updateProgress(enrolledCourse.getId(), enrolledCourseDto);
+        });
+    }
 
+    @Test
+    void updateProgress_Exception3_Test() {
+        when(enrolledCourseRepository.findById(enrolledCourse.getId()))
+            .thenReturn(Optional.of(enrolledCourse));
+        when(userRepository.findUsername(enrolledCourseDto.getEmail()))
+            .thenReturn(user);
+        user.getRoles().forEach(role -> {
+            role.setName(RoleEnum.ROLE_ADMIN);
+        });
+        List<Section> sections = sectionRepository.searchAllSections(enrolledCourse.getCourse().getId());
+
+        sections.forEach(section -> {
+            List<Material> materials = section.getMaterials();
+            materials.forEach(checkMaterial -> {
+                checkMaterial.setId(enrolledCourseDto.getMaterialId());
+                if(checkMaterial.getId().equals(enrolledCourseDto.getMaterialId())) {
+                    material = checkMaterial;
+                    check = true;
+                }
+                checkMaterial.setIsDeleted(true);
+            });
+        });
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.updateProgress(enrolledCourse.getId(), enrolledCourseDto);
+        });
+    }
+
+    @Test
+    void updateProgress_Exception4_Test() {
+        when(enrolledCourseRepository.findById(enrolledCourse.getId()))
+            .thenReturn(Optional.of(enrolledCourse));
+        when(userRepository.findUsername(enrolledCourseDto.getEmail()))
+            .thenReturn(user);
+        user.getRoles().forEach(role -> {
+            role.setName(RoleEnum.ROLE_ADMIN);
+        });
+        check = false;
+        assertThrows(RuntimeException.class, () -> {
+            enrolledCourseService.updateProgress(enrolledCourse.getId(), enrolledCourseDto);
+        });
     }
 }

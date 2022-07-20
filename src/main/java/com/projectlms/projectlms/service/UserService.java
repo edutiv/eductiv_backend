@@ -102,29 +102,50 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Object> changePassword(UserDto request) {
+    public User changePassword(UserDto request) {
         try {
             log.info("Find user: {}", request);
-            Optional<User> user = userRepository.findByUsername(request.getEmail());
-            if (user.isEmpty()) {
-                log.info("user not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
+            User user = userRepository.findByUsername(request.getEmail())
+                .orElseThrow(() -> new Exception("USER WITH EMAIL " + request.getEmail() + " NOT FOUND"));
 
             log.info("Check password");
-            Boolean isMatch = passwordEncoder.matches(request.getCurrentPassword(), user.get().getPassword());
+            Boolean isMatch = passwordEncoder.matches(request.getCurrentPassword(), user.getPassword());
             if(!isMatch) throw new Exception("Password does not match");
 
             log.info("Save new password");
-            user.get().setPassword(passwordEncoder.encode(request.getNewPassword()));
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             
-            userRepository.save(user.get());
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, user.get(), HttpStatus.OK);
+            userRepository.save(user);
+            return user;
         } catch(Exception e) {
-            log.error("Change password error, Error : {}",e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Change password error");
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
+
+    // public ResponseEntity<Object> changePassword(UserDto request) {
+    //     try {
+    //         log.info("Find user: {}", request);
+    //         Optional<User> user = userRepository.findByUsername(request.getEmail());
+    //         if (user.isEmpty()) {
+    //             log.info("user not found");
+    //             return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.NOT_FOUND);
+    //         }
+
+    //         log.info("Check password");
+    //         Boolean isMatch = passwordEncoder.matches(request.getCurrentPassword(), user.get().getPassword());
+    //         if(!isMatch) throw new Exception("Password does not match");
+
+    //         log.info("Save new password");
+    //         user.get().setPassword(passwordEncoder.encode(request.getNewPassword()));
+            
+    //         userRepository.save(user.get());
+    //         return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, user.get(), HttpStatus.OK);
+    //     } catch(Exception e) {
+    //         log.error("Change password error, Error : {}",e.getMessage());
+    //         return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR,null,HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     public ResponseEntity<Object> deleteUser(Long id) {
         try {

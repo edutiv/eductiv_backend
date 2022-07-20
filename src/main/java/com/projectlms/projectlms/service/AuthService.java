@@ -33,7 +33,7 @@ public class AuthService {
     private final JwtProvider jwtTokenProvider; 
     private final PasswordEncoder passwordEncoder;
     
-    public UserDto register(UserDto req) {
+    public User register(UserDto req) {
         try {
             log.info("Search username in database");
             if (userRepository.findUsername(req.getEmail()) != null) {
@@ -46,16 +46,10 @@ public class AuthService {
             user.setUsername(req.getEmail());
             user.setPassword(passwordEncoder.encode(req.getPassword()));
 
-            if(req.getSpecializationId() != null) {
-                Category category = categoryRepository.findById(req.getSpecializationId())
-                    .orElseThrow(() -> new RuntimeException("Specialization not found"));
-                user.setCategory(category);
-            }
             Set<Role> roles = new HashSet<>();
                 if(req.getRoles() == null) {
                     Role role = roleRepository.findByName(RoleEnum.ROLE_USER)
                         .orElseThrow(() -> new RuntimeException("ROLE NOT FOUND"));
-                    
                     roles.add(role);
                 }else {
                     req.getRoles().forEach(inputRole -> {
@@ -64,12 +58,18 @@ public class AuthService {
                         roles.add(role);
                     });
                 }
-                user.setRoles(roles);
+            user.setRoles(roles);
+
+            if(req.getSpecializationId() != null) {
+                Category category = categoryRepository.findById(req.getSpecializationId())
+                    .orElseThrow(() -> new RuntimeException("Specialization not found"));
+                user.setCategory(category);
+            }
             userRepository.save(user);
 
             req.setPassword("*".repeat(req.getPassword().length()));
             log.info("User {} saved", req.getEmail());
-            return req;
+            return user;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
